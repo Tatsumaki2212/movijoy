@@ -13,7 +13,11 @@
 export function FacciaImmagine({ d }: { d: number }) {
   const barra = Math.round(d * 0.2);
   const bordo = Math.max(1, Math.round(d * 0.035));
-  const occhio = Math.round(d * 0.1);
+  /* Pupilla grande e alone sottile: con l'alone spesso quanto il bordo
+     della croce gli occhi uscivano bianchi con un punto scuro. */
+  const occhio = Math.round(d * 0.13);
+  const alone = Math.max(1, Math.round(d * 0.018));
+  const sorriso = Math.max(2, Math.round(d * 0.045));
   return (
     <div
       style={{
@@ -59,7 +63,7 @@ export function FacciaImmagine({ d }: { d: number }) {
           height: occhio,
           borderRadius: "50%",
           background: "#16233a",
-          border: `${bordo}px solid #f2f3f5`,
+          border: `${alone}px solid #f2f3f5`,
         }}
       />
       <div
@@ -71,20 +75,22 @@ export function FacciaImmagine({ d }: { d: number }) {
           height: occhio,
           borderRadius: "50%",
           background: "#16233a",
-          border: `${bordo}px solid #f2f3f5`,
+          border: `${alone}px solid #f2f3f5`,
         }}
       />
-      <div
-        style={{
-          position: "absolute",
-          left: d * 0.5 - d * 0.14,
-          top: d * 0.5 + d * 0.2,
-          width: d * 0.28,
-          height: d * 0.1,
-          borderBottom: `${Math.max(1, Math.round(d * 0.045))}px solid #16233a`,
-          borderRadius: "0 0 50% 50%",
-        }}
-      />
+      {/* Il sorriso è un tracciato SVG: un bordo curvo da solo il motore
+          lo disegnava come un rettangolo. Alone bianco sotto, inchiostro
+          sopra, come nella faccia 2D. */}
+      <svg
+        style={{ position: "absolute", left: 0, top: 0 }}
+        width={d}
+        height={d}
+        viewBox="0 0 120 120"
+        fill="none"
+      >
+        <path d="M42 84 Q60 100 78 84" stroke="#f2f3f5" strokeWidth={(sorriso / d) * 120 + 4} strokeLinecap="round" />
+        <path d="M42 84 Q60 100 78 84" stroke="#16233a" strokeWidth={(sorriso / d) * 120} strokeLinecap="round" />
+      </svg>
     </div>
   );
 }
