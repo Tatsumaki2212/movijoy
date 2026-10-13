@@ -183,12 +183,12 @@ export default function Casa() {
             Movijoy<span>.</span>
           </span>
           <div className="mj-barra__dati">
-            <span className="mj-etichetta">Correzione dello scritto</span>
+            <span className="mj-etichetta">Agente IA dedicato</span>
             <span className="mj-etichetta">Criteri Cambridge · IELTS</span>
             {/* ⚠️ Niente «Attivo adesso»: afferma uno stato vivo che su
                 questo dominio non si può provare. Venti secondi è una
                 misura vera del motore. */}
-            <span className="mj-etichetta">Risposta in venti secondi</span>
+            <span className="mj-etichetta">Risposte rapide senza credito</span>
           </div>
         </header>
       </div>

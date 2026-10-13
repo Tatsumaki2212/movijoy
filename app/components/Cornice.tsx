@@ -21,9 +21,9 @@ export default function Cornice({ children }: { children: React.ReactNode }) {
             Movijoy<span>.</span>
           </Link>
           <div className="mj-barra__dati">
-            <span className="mj-etichetta">Correzione dello scritto</span>
+            <span className="mj-etichetta">Agente IA dedicato</span>
             <span className="mj-etichetta">Criteri Cambridge · IELTS</span>
-            <span className="mj-etichetta">Risposta in venti secondi</span>
+            <span className="mj-etichetta">Risposte rapide senza credito</span>
           </div>
         </header>
       </div>
