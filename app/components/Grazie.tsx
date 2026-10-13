@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Sfera from "./Sfera";
 import Voce, { useVoce } from "./Voce";
 import { di } from "../lib/voce";
+import { frase as fraseGrazie } from "../lib/dialogo-frasi";
 
 /**
  * Il grazie di Movijoy, detto muovendo la bocca. Nome ed email arrivano
@@ -27,7 +28,7 @@ export default function Grazie() {
     return () => window.clearTimeout(t);
   }, []);
 
-  const frase = `Grazie${chi.nome ? `, ${chi.nome}` : ""}. Le tue risposte sono arrivate. Che Livello! le legge e ti scrive${chi.email ? ` a ${chi.email}` : ""}, di solito in giornata.`;
+  const frase = fraseGrazie("grazie", { nome: chi.nome, email: chi.email });
 
   const [voce, cambiaVoce] = useVoce();
 
@@ -46,7 +47,7 @@ export default function Grazie() {
     };
     const avvio = window.setTimeout(() => {
       if (voce) {
-        ferma = di(frase, {
+        ferma = di({ id: "grazie", nome: chi.nome, email: chi.email }, frase, {
           allaFine: () => {
             voceFinita = true;
             chiudi();

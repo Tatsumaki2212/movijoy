@@ -66,6 +66,14 @@ Variabili d'ambiente del progetto Vercel:
   nel repository di chelivello: quella migrazione va lanciata prima.
   Senza queste due variabili il modulo risponde 503 e dice di scrivere
   per posta.
+- `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` — facoltative: **la voce
+  vera di Movijoy** (`app/api/voce/route.ts`). Senza, il dialogo usa la
+  sintesi vocale del browser. La rotta pronuncia solo le frasi del
+  copione in `app/lib/dialogo-frasi.ts`: nessun testo libero da fuori.
+- `GOOGLE_SITE_VERIFICATION` — facoltativa: il codice che Google Search
+  Console dà per il metodo «tag HTML». Messo, il tag compare in ogni
+  pagina; poi in Search Console si clicca *Verifica* e si invia la mappa
+  `https://www.movijoy.it/sitemap.xml`.
 - `RESEND_API_KEY`, `RICHIESTE_A` — facoltative: l'avviso per posta a
   chi risponde (l'indirizzo in `RICHIESTE_A`), mandato dopo il
   salvataggio. Il mittente è `richieste@movijoy.it`: il dominio va

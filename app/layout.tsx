@@ -47,6 +47,36 @@ export const metadata: Metadata = {
   },
   description:
     "Movijoy è un'intelligenza artificiale che corregge l'inglese scritto sui criteri ufficiali Cambridge e IELTS, in venti secondi, con il motivo accanto a ogni riga.",
+  /* Google Search Console: il codice di verifica arriva da una variabile
+     (GOOGLE_SITE_VERIFICATION); finché non c'è, il tag non compare. */
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
+  openGraph: { type: "website", locale: "it_IT", siteName: NOME_SITO },
+};
+
+/* Chi siamo e che cos'è questo sito, in una forma che una macchina
+   legge senza interpretare il testo: vale per Google e vale ancora di
+   più per chi riassume pagine con un modello. */
+const DATI_SITO = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITO}/#societa`,
+      name: "«Che Livello!» S.r.l.",
+      url: "https://www.chelivello.it",
+      brand: { "@type": "Brand", name: "Movijoy" },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITO}/#sito`,
+      url: SITO,
+      name: NOME_SITO,
+      inLanguage: "it",
+      publisher: { "@id": `${SITO}/#societa` },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -68,6 +98,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(DATI_SITO) }} />
         {children}
         <Analytics />
       </body>

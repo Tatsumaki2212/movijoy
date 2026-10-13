@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Sfera from "./Sfera";
 import Voce, { useVoce } from "./Voce";
 import { di } from "../lib/voce";
+import { DOMANDE, frase as diceFrase, type Domanda } from "../lib/dialogo-frasi";
 
 /**
  * Parla con Movijoy: le domande di profilazione, una per volta.
@@ -25,52 +26,10 @@ import { di } from "../lib/voce";
  * grazie in sessionStorage, mai nei parametri dell'URL.
  */
 
-type Scelta = { v: string; t: string };
-type Domanda =
-  | { id: "nome"; tipo: "testo"; campo: string }
-  | { id: "chi"; tipo: "scelta"; scelte: Scelta[] }
-  | { id: "uso"; tipo: "scelta"; scelte: Scelta[] }
-  | { id: "dettaglio"; tipo: "lungo"; campo: string }
-  | { id: "email"; tipo: "email"; campo: string };
-
-const DOMANDE: Domanda[] = [
-  { id: "nome", tipo: "testo", campo: "Il tuo nome" },
-  {
-    id: "chi",
-    tipo: "scelta",
-    scelte: [
-      { v: "privato", t: "Per me" },
-      { v: "piattaforma", t: "Per la mia piattaforma" },
-    ],
-  },
-  {
-    id: "uso",
-    tipo: "scelta",
-    scelte: [
-      { v: "lavoro", t: "Email e documenti di lavoro" },
-      { v: "esame", t: "Un esame: Cambridge, IELTS" },
-      { v: "altro", t: "Altro" },
-    ],
-  },
-  { id: "dettaglio", tipo: "lungo", campo: "Due righe bastano" },
-  { id: "email", tipo: "email", campo: "nome@azienda.it" },
-];
-
+/* Il copione — domande e frasi — sta in lib/dialogo-frasi.ts, condiviso
+   con la rotta della voce: il server pronuncia solo quello che c'è lì. */
 function dice(d: Domanda, r: Record<string, string>): string {
-  switch (d.id) {
-    case "nome":
-      return "Ciao, sono Movijoy. Prima di tutto: come ti chiami?";
-    case "chi":
-      return `Piacere, ${r.nome || "tu"}. Movijoy lo vuoi per te, o per la tua piattaforma — un'azienda, una scuola, un sito?`;
-    case "uso":
-      return "Che inglese scrivi di più?";
-    case "dettaglio":
-      return r.chi === "piattaforma"
-        ? "Raccontami la piattaforma in due righe: chi la usa, e che cosa dovrebbe fare Movijoy lì."
-        : "Raccontami in due righe che cosa vorresti che Movijoy facesse per te.";
-    case "email":
-      return "Ultima cosa: dove ti scrive Che Livello!? La tua email.";
-  }
+  return diceFrase(d.id, { nome: r.nome, chi: r.chi });
 }
 
 const MS = 38;
@@ -111,7 +70,7 @@ export default function Dialogo() {
     };
     const avvio = window.setTimeout(() => {
       if (voce) {
-        ferma = di(frase, {
+        ferma = di({ id: domanda.id, nome: risposte.nome, chi: risposte.chi }, frase, {
           allaFine: () => {
             voceFinita = true;
             chiudi();

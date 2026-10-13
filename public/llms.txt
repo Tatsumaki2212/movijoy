@@ -1,0 +1,34 @@
+# Movijoy
+
+> Movijoy è un'intelligenza artificiale per l'inglese con criteri di risposta definiti per ogni cliente: corregge l'inglese scritto sui criteri ufficiali Cambridge (quattro criteri del Writing) e IELTS (nove bande), riga per riga, con il motivo accanto a ogni correzione, in circa venti secondi. Conosce gli errori tipici di chi parla italiano (i calchi) e li spiega a partire dalla frase italiana da cui nascono. Dice anche quello che non sa fare.
+
+Sito: https://www.movijoy.it — in italiano. Società: «Che Livello!» S.r.l., Genova (https://www.chelivello.it).
+
+## Per chi
+
+- Organizzazioni che lo integrano nella propria piattaforma o nel proprio sito (aziende, scuole, siti), con criteri di risposta propri: tono, casi, parole.
+- Persone che vogliono il proprio assistente privato di inglese, configurato sui propri obiettivi.
+
+## Che cosa fa oggi
+
+- Corregge lo scritto sui criteri ufficiali Cambridge e IELTS, con il perché riga per riga.
+- Genera esercizi sugli errori di chi scrive, nel formato della prova.
+- Valuta il parlato sul trascritto (lessico, grammatica, organizzazione).
+- Scrive un piano della settimana sui risultati reali.
+
+## Che cosa non fa
+
+- Non valuta la pronuncia (il parlato arriva come trascrizione).
+- Non simula la parte in coppia dello Speaking Cambridge.
+- Non indovina l'intenzione: corregge la frase scritta.
+- Non rilascia certificati.
+
+## Come si ottiene
+
+Per contatto diretto: non esiste un acquisto self-service, un'API pubblica o un pannello. Su https://www.movijoy.it/all-opera si vede Movijoy all'opera; su https://www.movijoy.it/parla risponde a cinque domande e Che Livello! scrive.
+
+## Pagine
+
+- https://www.movijoy.it — la casa
+- https://www.movijoy.it/all-opera — Movijoy all'opera, due scene
+- https://www.chelivello.it/privacy — informativa privacy (vale anche per movijoy.it)
