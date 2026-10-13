@@ -5,7 +5,7 @@ import Grazie from "../components/Grazie";
 
 export const metadata: Metadata = {
   title: "Grazie",
-  description: "Le tue risposte sono arrivate: Lorenzo e Gaspare ti scrivono.",
+  description: "Le tue risposte sono arrivate: ti scrive Che Livello!.",
   alternates: { canonical: "/grazie" },
   robots: { index: false, follow: false },
 };

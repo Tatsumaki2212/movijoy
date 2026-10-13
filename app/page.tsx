@@ -18,7 +18,7 @@ import { TITOLARE } from "./lib/titolare";
  * ⚠️ QUESTA PAGINA NON VENDE IL REGISTRO. Nessun tasto verso gli
  * abbonamenti di chelivello, nessun prezzo, nessun «compreso
  * nell'abbonamento», niente `offers` nei dati strutturati. L'azione è
- * una richiesta: chiedono, Lorenzo e Gaspare rispondono. L'OFFERTA di
+ * una richiesta: chiedono, Che Livello! risponde. L'OFFERTA di
  * Movijoy non è ancora definita: quando lo sarà, il posto segnato
  * ⚠️ OFFERTA qui sotto prende il prezzo e come si compra.
  *
@@ -310,8 +310,8 @@ export default function Casa() {
           <p className="mj-apertura__dice" style={{ margin: "0 auto 2.25rem" }}>
             Non c&apos;è un prezzo da scaffale, perché non c&apos;è un Movijoy uguale
             per tutti: i criteri si definiscono per chi lo usa. Guardalo
-            all&apos;opera, poi rispondi alle sue cinque domande: ti scrivono
-            Lorenzo e Gaspare.
+            all&apos;opera, poi rispondi alle sue cinque domande: ti scrive
+            Che Livello!.
           </p>
           <div className="mj-azioni">
             <a href="/all-opera" className="mj-tasto">

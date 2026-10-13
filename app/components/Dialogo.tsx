@@ -69,7 +69,7 @@ function dice(d: Domanda, r: Record<string, string>): string {
         ? "Raccontami la piattaforma in due righe: chi la usa, e che cosa dovrebbe fare Movijoy lì."
         : "Raccontami in due righe che cosa vorresti che Movijoy facesse per te.";
     case "email":
-      return "Ultima cosa: dove ti rispondono Lorenzo e Gaspare? La tua email.";
+      return "Ultima cosa: dove ti scrive Che Livello!? La tua email.";
   }
 }
 

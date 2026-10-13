@@ -27,7 +27,7 @@ export default function Grazie() {
     return () => window.clearTimeout(t);
   }, []);
 
-  const frase = `Grazie${chi.nome ? `, ${chi.nome}` : ""}. Le tue risposte sono arrivate. Lorenzo e Gaspare le leggono e ti scrivono${chi.email ? ` a ${chi.email}` : ""}, di solito in giornata — non un sistema, loro.`;
+  const frase = `Grazie${chi.nome ? `, ${chi.nome}` : ""}. Le tue risposte sono arrivate. Che Livello! le legge e ti scrive${chi.email ? ` a ${chi.email}` : ""}, di solito in giornata.`;
 
   const [voce, cambiaVoce] = useVoce();
 

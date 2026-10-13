@@ -5,7 +5,7 @@ import Dialogo from "../components/Dialogo";
 
 export const metadata: Metadata = {
   title: "Parla con Movijoy",
-  description: "Cinque domande per capire chi sei e che cosa ti serve. Rispondono Lorenzo e Gaspare.",
+  description: "Cinque domande per capire chi sei e che cosa ti serve. Ti scrive Che Livello!.",
   alternates: { canonical: "/parla" },
   robots: { index: false, follow: true },
 };

@@ -43,7 +43,7 @@ export default function AllOpera() {
         </h2>
         <p className="mj-apertura__dice" style={{ margin: "0 auto 2.25rem" }}>
           Cinque domande, un minuto: Movijoy ti chiede chi sei e che cosa ti
-          serve, e Lorenzo e Gaspare ti rispondono.
+          serve, e ti scrive Che Livello!.
         </p>
         <div className="mj-azioni">
           {/* <Link>, non <a>: la navigazione interna conserva il gesto del
