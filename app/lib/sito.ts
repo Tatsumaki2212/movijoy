@@ -8,7 +8,13 @@
  * volte per arrivare dove poteva arrivare subito. È la stessa regola
  * scritta in chelivello (app/lib/sito.ts), imparata lì.
  */
-export const SITO = (process.env.NEXT_PUBLIC_SITE_URL || "https://movijoy.it").replace(
+/* ⚠️ IL WWW, NON L'APEX. Verificato il 13 ottobre 2026 prima del primo
+   deploy: su Vercel il dominio primario è www.movijoy.it e
+   https://movijoy.it risponde con un 308 verso il www. Il canonical
+   deve essere l'indirizzo che risponde 200 — quindi il www — e sta
+   scritto qui nel codice, non in una variabile da ricordare. Se un
+   giorno il primario cambia, cambia questa riga. */
+export const SITO = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.movijoy.it").replace(
   /\/$/,
   "",
 );
