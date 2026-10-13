@@ -28,7 +28,9 @@ export default function ImmagineCondivisione() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", maxWidth: 680 }}>
-          <div style={{ fontSize: 24, letterSpacing: 6, fontWeight: 700, color: "#93a6bd", marginBottom: 36 }}>
+          {/* satori vuole «display: flex» su ogni contenitore con più di un
+              figlio: qui il testo e il punto rosso sono due. */}
+          <div style={{ display: "flex", fontSize: 24, letterSpacing: 6, fontWeight: 700, color: "#93a6bd", marginBottom: 36 }}>
             MOVIJOY<span style={{ color: "#c8102e" }}>.</span>
           </div>
           <div style={{ fontSize: 92, fontWeight: 800, lineHeight: 0.95, letterSpacing: -4, display: "flex", flexDirection: "column" }}>
