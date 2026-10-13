@@ -1,0 +1,633 @@
+/* ═══════════════════════════════════════════════════════════════
+   MOVIJOY — il mondo scuro
+   ═══════════════════════════════════════════════════════════════
+
+   CONTRATTO DI DIREZIONE (1 ottobre 2026)
+
+   TESI — Movijoy non si vende come «intelligente»: si vende come uno
+   che NON DIMENTICA. La pagina rifiuta l'allestimento che questa
+   categoria produce sempre — nero più un neon, sfere-gradiente che
+   galleggiano, «powered by AI», tre schede uguali con un'icona — e al
+   suo posto mette un catalogo degli errori di chi legge, tenuto.
+
+   MONDO — nero profondo (#0a0b0d), il blu del marchio in campiture
+   larghe, il rosso della bandiera come unico segnale, il giallo come
+   regolo. Archivo a peso 800 e scala enorme; Archivo Narrow maiuscolo
+   e spaziato per le etichette da strumento. Filetti da un pixel al
+   posto delle schede: la pagina è un foglio editoriale, non una
+   griglia di riquadri.
+
+   STORIA — chi arriva capisce che Movijoy è la parte del prodotto che
+   si ricorda tutto quello che sbagli; ci crede perché la pagina gli
+   fa vedere errori veri con la correzione accanto; e si abbona.
+
+   PRIMO SCHERMO — nero pieno. La sfera in 3D a destra, sopra il
+   proprio riflesso. A sinistra il titolo su tre righe a scala enorme,
+   e sotto il tasto dell'abbonamento. Nessuna etichetta sopra il
+   titolo: è vietata dal pavimento di qualità.
+
+   FORMA — direzione appuntata dal brief (due riferimenti dati da
+   Lorenzo: editoriale brutalista e sfera iridescente su superficie
+   riflettente). Nessun sorteggio: un brief appuntato batte il
+   sorteggio.
+
+   FINISH: unreviewed and undocumented is unfinished; this build ends
+   with the finish review, the verdict, and DESIGN.md.
+
+   ───────────────────────────────────────────────────────────────
+
+   ⚠️ TUTTO SOTTO `.mj`, come registro.css sotto `.reg`. Le classi del
+   sito — .foglio, .azione, .pagina — le usano quindici altre pagine:
+   questo foglio non deve poterle sfiorare. Fuori da `.mj` non esiste.
+
+   ⚠️ NIENTE MONOSPAZIO. Il registro tecnico qui viene dal maiuscoletto
+   spaziato di Archivo Narrow, dai filetti e dalla misura — non da un
+   carattere a larghezza fissa, che per «fare tecnologico» è un
+   costume e basta. Nessun carattere nuovo: Archivo e Archivo Narrow
+   sono già nel progetto, caricati in locale.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ⚠️ 5 OTTOBRE 2026: MOVIJOY E IL REGISTRO SONO LO STESSO MONDO.
+   Erano due — il nero editoriale di qui e la segnaletica di là — ed
+   era una scelta giusta finché il registro era bianco e istituzionale.
+   Adesso il registro è «la superficie della lingua», e la sfera di
+   Movijoy sopra un piano riflettente ERA GIÀ quell immagine: tenerli
+   separati voleva dire mantenere due fogli che dicono la stessa cosa
+   con due palette diverse. I gettoni qui sotto sono quelli di
+   app/registro.css, e il campo è lo stesso componente. */
+.mj {
+  --nero: #070b11;
+  --nero-alto: #0f1a2a;
+  --blu: #2c4667;
+  --blu-cupo: #16233a;
+  --iride: #7fe3d0;
+  --rosso: #c8102e;
+  --giallo: #f6c453;
+  --chiaro: #e9eff7;
+  --tenue: #93a6bd;
+  --filo: rgba(242, 243, 245, 0.14);
+  --filo-forte: rgba(242, 243, 245, 0.3);
+
+  background:
+    radial-gradient(120% 80% at 50% 110%, #122033 0%, transparent 60%),
+    linear-gradient(180deg, #070b11 0%, #0b1320 55%, #0f1a2a 100%);
+  color: var(--chiaro);
+  font-family: var(--f-stampa-stack, "Archivo", system-ui, sans-serif);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.mj ::selection {
+  background: var(--rosso);
+  color: #fff;
+}
+
+/* ── L'impianto: un foglio, non una griglia di riquadri ───────── */
+
+.mj-foglio {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3.5rem);
+}
+
+/* Il filetto è l'unità di separazione di tutta la pagina. */
+.mj-riga-filo {
+  border-top: 1px solid var(--filo);
+}
+
+/* L'etichetta da strumento: maiuscoletto spaziato, non un occhiello
+   sopra un titolo (quello è vietato). Vive nelle fasce di dati e
+   nelle intestazioni di colonna, mai sopra un <h>. */
+.mj-etichetta {
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+
+/* ── La barra in cima ─────────────────────────────────────────── */
+
+.mj-barra {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.5rem 0 1.25rem;
+  flex-wrap: wrap;
+}
+
+.mj-marchio {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chiaro);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mj-marchio span {
+  color: var(--rosso);
+}
+
+.mj-barra__dati {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2.75rem);
+  flex-wrap: wrap;
+}
+
+/* ── Il primo schermo ─────────────────────────────────────────── */
+
+.mj-apertura {
+  position: relative;
+  min-height: min(100svh, 980px);
+  display: grid;
+  /* La colonna del testo è più larga della metà: il titolo deve poter
+     respirare sopra il bordo scuro della sfera, che lì è quasi nero. */
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 2rem;
+}
+
+/* La tela 3D occupa la metà destra e sborda: la sfera deve sembrare
+   più grande della pagina, non un'illustrazione dentro una scatola. */
+.mj-tela {
+  position: absolute;
+  /* Sborda a destra quel tanto che basta a far sembrare la sfera più
+     grande della pagina, senza tagliarle via il bordo illuminato —
+     che è dove vive l'iridescenza. */
+  inset: -6% -5% -2% 40%;
+  z-index: 0;
+}
+
+/* ⚠️ LA MISURA A SCHERMO LA DECIDE IL CSS, non il canvas. Senza queste
+   due righe il canvas cresce da solo: i suoi attributi width/height
+   gli danno una dimensione intrinseca, quella dimensione lo fa
+   misurare più grande, e il giro dopo il buffer è ancora più grande.
+   Prima della correzione misurava 17315 × 8675 pixel. */
+.mj-tela__gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .mj-apertura {
+    grid-template-columns: 1fr;
+    align-content: center;
+    min-height: auto;
+    padding: 0 0 3rem;
+  }
+  .mj-tela {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    /* ⚠️ MISURATO, NON SCELTO A OCCHIO. A 58vh la sfera mangiava mezzo
+       telefono e spingeva titolo e tasto sotto la piega: chi arriva da
+       Instagram vedeva una palla e nient'altro. A 34vh il primo
+       schermo contiene barra, sfera, titolo, frase e tasto — che è il
+       minimo perché una pagina che deve vendere funzioni. */
+    height: min(34vh, 15rem);
+    margin-bottom: 0.75rem;
+    order: -1;
+    /* ⚠️ La tela finisce con un taglio netto, e il suo nero — schiarito
+       dall'alone dietro la sfera — non è esattamente il nero della
+       pagina: si vedeva una fascia. Qui sfuma negli ultimi pixel. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  }
+}
+
+@media (max-width: 700px) {
+  /* Le etichette da strumento sono atmosfera, non informazione: su un
+     telefono costavano trecento pixel prima di una parola utile. */
+  .mj-barra__dati {
+    display: none;
+  }
+  .mj-barra {
+    padding: 1rem 0 0.5rem;
+  }
+  .mj-titolo {
+    font-size: clamp(2.3rem, 10vw, 3.4rem);
+  }
+  .mj-apertura__dice {
+    font-size: 1rem;
+    margin-bottom: 1.4rem;
+  }
+  .mj-azioni {
+    gap: 0.6rem;
+  }
+  .mj-tasto {
+    padding: 0.85rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  /* Il piede della barra torna visibile in fondo alla pagina, dove lo
+     spazio c'è: nel piede le stesse etichette sono una firma, non un
+     ostacolo. */
+  .mj-piede .mj-barra__dati {
+    display: flex;
+  }
+}
+
+.mj-apertura__testo {
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
+  padding: clamp(2rem, 6vh, 5rem) 0;
+}
+
+/* ⚠️ IL TITOLO SFONDA I 6rem del pavimento di qualità, e lo fa perché
+   il brief appunta «tipografia enorme». La misura è tenuta dal
+   clamp: su un telefono resta leggibile, su un desktop grida. */
+/* ⚠️ IL MASSIMO È 5.6rem, non di più, e il motivo è misurato non
+   stimato: in Archivo 800 un carattere avanza circa 0,55em, quindi in
+   una colonna da ~700px una riga regge quindici caratteri. Più grande
+   di così il titolo esce dalla colonna e spinge il tasto sotto la
+   piega — che su una pagina che deve vendere è il difetto peggiore.
+   Il brief chiede tipografia enorme: enorme è la scala RELATIVA alla
+   riga, non un numero che sfonda. */
+.mj-titolo {
+  font-size: clamp(2.6rem, 6vw, 5.6rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  margin: 0 0 1.4rem;
+  text-wrap: balance;
+}
+
+.mj-titolo em {
+  font-style: normal;
+  color: var(--rosso);
+}
+
+.mj-apertura__dice {
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--tenue);
+  max-width: 44ch;
+  /* ⚠️ Stretto apposta: il tasto deve stare DENTRO il primo schermo
+     anche con la fascia dei cookie aperta in basso. Una pagina che
+     deve vendere e nasconde l'azione sotto la piega ha fallito prima
+     di cominciare. */
+  margin: 0 0 1.75rem;
+}
+
+.mj-apertura__dice strong {
+  color: var(--chiaro);
+  font-weight: 700;
+}
+
+/* ── I tasti ──────────────────────────────────────────────────── */
+
+.mj-azioni {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.mj-tasto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--rosso);
+  color: #fff;
+  border: 1px solid var(--rosso);
+  padding: 0.95rem 1.6rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mj-tasto:hover {
+  background: #e01634;
+  border-color: #e01634;
+  transform: translateY(-2px);
+}
+
+.mj-tasto--vuoto {
+  background: transparent;
+  color: var(--chiaro);
+  border-color: var(--filo-forte);
+}
+
+.mj-tasto--vuoto:hover {
+  background: rgba(242, 243, 245, 0.08);
+  border-color: var(--chiaro);
+}
+
+.mj-prezzo {
+  font-size: 0.86rem;
+  color: var(--tenue);
+}
+
+.mj-prezzo b {
+  color: var(--chiaro);
+  font-weight: 700;
+}
+
+.mj a:focus-visible,
+.mj button:focus-visible {
+  outline: 2px solid var(--giallo);
+  outline-offset: 3px;
+}
+
+/* ── Le cifre che fanno da arredo ─────────────────────────────── */
+
+.mj-conta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.mj-conta > div {
+  padding: 2rem clamp(1rem, 2vw, 2rem) 2.25rem 0;
+  border-right: 1px solid var(--filo);
+}
+
+.mj-conta > div:last-child {
+  border-right: 0;
+}
+
+.mj-cifra {
+  display: block;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.mj-conta p {
+  margin: 0.45rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--tenue);
+  max-width: 30ch;
+}
+
+/* ── La prova: gli errori veri, con la correzione ─────────────── */
+
+.mj-sezione {
+  padding: clamp(4rem, 10vh, 8rem) 0;
+}
+
+.mj-sezione__titolo {
+  font-size: clamp(1.9rem, 4.2vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  margin: 0 0 1.1rem;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+
+.mj-sezione__dice {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--tenue);
+  max-width: 54ch;
+  margin: 0 0 2.75rem;
+}
+
+.mj-prove {
+  display: grid;
+  gap: 0;
+}
+
+/* ⚠️ RIGHE, NON SCHEDE. Tre riquadri uguali con un'icona sopra sono
+   l'allestimento che questa pagina esiste per rifiutare. Qui ogni
+   errore è una riga di registro, separata da un filetto. */
+.mj-prova {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: start;
+  padding: 1.6rem 0;
+  border-top: 1px solid var(--filo);
+}
+
+.mj-prova:last-child {
+  border-bottom: 1px solid var(--filo);
+}
+
+.mj-prova__male {
+  font-size: clamp(1rem, 1.6vw, 1.22rem);
+  color: var(--tenue);
+  text-decoration: line-through;
+  text-decoration-color: var(--rosso);
+  text-decoration-thickness: 2px;
+  line-height: 1.35;
+}
+
+.mj-prova__bene {
+  font-size: clamp(1rem, 1.6vw, 1.22rem);
+  font-weight: 700;
+  color: var(--chiaro);
+  line-height: 1.35;
+}
+
+.mj-prova__perche {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--tenue);
+}
+
+@media (max-width: 760px) {
+  .mj-prova {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}
+
+/* ── Due colonne: cosa sa fare, cosa no ───────────────────────── */
+
+.mj-due {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.mj-elenco {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mj-elenco li {
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--filo);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--tenue);
+}
+
+.mj-elenco li:last-child {
+  border-bottom: 1px solid var(--filo);
+}
+
+.mj-elenco b {
+  display: block;
+  color: var(--chiaro);
+  font-weight: 700;
+  font-size: 1.08rem;
+  margin-bottom: 0.3rem;
+}
+
+/* ⚠️ LA COLONNA DEI LIMITI NON È UN RIPIEGO GRAFICO: ha lo stesso peso
+   dell'altra, apposta. «Dire i limiti ad alta voce» è un principio
+   scritto in PRODUCT.md, e una pagina che li nasconde in fondo in
+   grigio chiaro lo tradisce mentre finge di rispettarlo. */
+.mj-elenco--limiti li {
+  border-top-color: rgba(200, 16, 46, 0.35);
+}
+
+.mj-elenco--limiti li:last-child {
+  border-bottom-color: rgba(200, 16, 46, 0.35);
+}
+
+/* ── La campitura blu: una sola, e grossa ─────────────────────── */
+
+.mj-campo {
+  background: var(--blu-cupo);
+  border-top: 1px solid var(--filo);
+  border-bottom: 1px solid var(--filo);
+}
+
+.mj-campo .mj-sezione__dice {
+  color: #c3cddc;
+}
+
+/* ── La chiusura ──────────────────────────────────────────────── */
+
+.mj-chiusura {
+  padding: clamp(5rem, 14vh, 10rem) 0 clamp(3rem, 8vh, 6rem);
+  text-align: center;
+}
+
+.mj-chiusura .mj-titolo {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 16ch;
+}
+
+.mj-chiusura .mj-azioni {
+  justify-content: center;
+}
+
+.mj-piede {
+  padding: 2rem 0 3rem;
+  border-top: 1px solid var(--filo);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.mj-piede a {
+  color: var(--tenue);
+  text-decoration: none;
+}
+
+.mj-piede a:hover {
+  color: var(--chiaro);
+  text-decoration: underline;
+}
+
+/* ── Il ripiego senza WebGL ───────────────────────────────────── */
+
+.mj-tela[data-senza-webgl] {
+  display: grid;
+  place-items: center;
+}
+
+.mj-faccia {
+  width: min(62%, 22rem);
+  height: auto;
+  filter: drop-shadow(0 2rem 4rem rgba(0, 0, 0, 0.7));
+}
+
+/* ── Il movimento: uno solo, orchestrato ──────────────────────── */
+
+/* ⚠️ UN MOMENTO SOLO, NON UN EFFETTO SU OGNI SEZIONE. Il titolo e il
+   sottotitolo salgono da sotto una volta, all'arrivo, con una
+   decelerazione esponenziale da uno stato GIÀ VISIBILE: se il
+   JavaScript non parte o l'animazione è spenta, il testo è comunque
+   lì — non si nasconde niente dietro un'animazione. */
+@keyframes mj-sale {
+  from {
+    opacity: 0;
+    transform: translateY(1.6rem);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.mj-apertura__testo > * {
+  animation: mj-sale 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.mj-apertura__testo > *:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.mj-apertura__testo > *:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mj *,
+  .mj *::before,
+  .mj *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* ── Il campo, condiviso con il registro ──────────────────────
+   ⚠️ LA CLASSE È QUELLA DEL REGISTRO, di proposito: un secondo nome
+   per la stessa cosa è il modo in cui due mondi tornano a divergere.
+   Qui serve solo dire che il contenuto ci sta sopra. */
+.mj .reg-campo {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 900ms ease;
+  pointer-events: none;
+}
+
+.mj .reg-campo--acceso {
+  opacity: 0.85;
+}
+
+.mj > *:not(.reg-campo) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mj .reg-campo {
+    transition: none;
+    opacity: 0.85;
+  }
+}

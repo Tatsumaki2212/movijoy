@@ -1,0 +1,58 @@
+/*
+ * La base di movijoy.it.
+ *
+ * Lo stile del sito sta tutto in movijoy.css, dentro «.mj». Qui ci
+ * sono solo tre cose: l'azzeramento del browser, le due pile di
+ * caratteri che movijoy.css si aspetta di trovare (le stesse variabili
+ * di chelivello, così il foglio di stile è identico fra i due siti), e
+ * il collegamento «salta al contenuto» per chi naviga da tastiera.
+ */
+
+:root {
+  /* Le due variabili --f-stampa e --f-colonna le scrive next/font nel
+     layout di radice, dai due .woff2 in app/caratteri. */
+  --f-stampa-stack: var(--f-stampa), "Segoe UI", system-ui, sans-serif;
+  --f-colonna-stack: var(--f-colonna), var(--f-stampa), sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--f-stampa-stack);
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Invisibile finché non riceve il fuoco da tastiera: allora compare in
+   alto e porta direttamente a <main id="contenuto">. I colori vengono
+   dalla tavolozza di movijoy.css, con un ripiego se mancano. */
+.salta {
+  position: absolute;
+  left: 1rem;
+  top: -100vh;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background: var(--giallo, #f2c94c);
+  color: var(--blu-cupo, #16233a);
+  font-family: var(--f-colonna-stack);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.salta:focus-visible {
+  top: 0.5rem;
+}
