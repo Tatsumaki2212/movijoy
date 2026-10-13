@@ -1104,9 +1104,210 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
   text-decoration-color: var(--chiaro);
 }
 
-/* La sezione della richiesta: il modulo nella colonna di destra. */
-.mj-richiesta .mj-due {
+.mj-targa__dice {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: #4a5a72;
+}
+
+/* ── Movijoy all'opera: le due scene ──────────────────────────── */
+
+.mj-opere {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.mj-opera {
+  border-top: 1px solid var(--filo);
+  padding-top: 1rem;
+}
+
+.mj-opera__testa {
+  margin-bottom: 0.9rem;
+}
+
+.mj-opera__testo {
+  margin: 0 0 1.2rem;
+  min-height: 5.2em;
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--chiaro);
+}
+
+/* Il cursore che batte: giallo, come il regolo. */
+.mj-opera__cursore {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--giallo);
+  animation: mj-lampeggio 1s steps(2) infinite;
+}
+
+@keyframes mj-lampeggio {
+  50% {
+    opacity: 0;
+  }
+}
+
+.mj-opera__righe {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mj-opera__righe li {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 1.25rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--filo);
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mj-opera__righe--vive li {
+  opacity: 1;
+  transform: none;
+}
+
+.mj-opera__male {
+  color: var(--tenue);
+  text-decoration: line-through;
+  text-decoration-color: var(--rosso);
+  text-decoration-thickness: 2px;
+}
+
+.mj-opera__bene {
+  color: var(--chiaro);
+  font-weight: 700;
+}
+
+.mj-opera__perche {
+  grid-column: 1 / -1;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--tenue);
+}
+
+.mj-opera__criteri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.mj-opera__criteri span:not(.mj-etichetta) {
+  font-size: 0.8rem;
+  color: var(--chiaro);
+  border: 1px solid var(--filo-forte);
+  padding: 0.25rem 0.55rem;
+}
+
+/* ── Le bolle: il dialogo e la scena sul sito ─────────────────── */
+
+.mj-opera__chat,
+.mj-dialogo__chat {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.mj-bolla {
+  margin: 0;
+  max-width: 40rem;
+  padding: 0.9rem 1.1rem;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--chiaro);
+  border: 1px solid var(--filo-forte);
+}
+
+.mj-bolla--utente {
+  justify-self: end;
+  background: rgba(242, 243, 245, 0.06);
+}
+
+.mj-bolla--movijoy {
+  justify-self: start;
+  border-color: rgba(246, 196, 83, 0.5);
+}
+
+.mj-bolla--movijoy b {
+  display: block;
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--giallo);
+  margin-bottom: 0.35rem;
+}
+
+.mj-bolla--viva {
+  border-color: var(--giallo);
+}
+
+/* ── Il dialogo: la sfera che parla, le domande, le risposte ──── */
+
+.mj-dialogo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 2rem;
   align-items: start;
+  padding: 2rem 0 4rem;
+  min-height: min(calc(100svh - 3.8rem), 900px);
+}
+
+/* Alta quasi quanto larga: così la tela resta «stretta» per lo shader
+   e la sfera sta al centro, con la macchina da presa alla sua altezza. */
+.mj-dialogo__sfera {
+  position: relative;
+  min-height: 560px;
+}
+
+.mj-tela--dialogo {
+  position: absolute;
+  inset: 0;
+}
+
+.mj-dialogo__scambio {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.mj-dialogo__risposta {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 40rem;
+}
+
+.mj-dialogo__risposta .mj-tasto {
+  justify-self: start;
+}
+
+.mj-scelte {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+@media (max-width: 900px) {
+  .mj-dialogo {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .mj-dialogo__sfera {
+    min-height: 220px;
+  }
+  .mj-tela--dialogo {
+    position: relative;
+    height: 220px;
+  }
 }
 
 /* ── Su un telefono ───────────────────────────────────────────── */
@@ -1135,6 +1336,11 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
     height: min(30vh, 15rem);
     grid-row: 1;
     margin-bottom: 0.25rem;
+    /* Sfuma anche in alto: la tela qui è un riquadro in flusso sotto la
+       barra, e il suo nero non è esattamente quello della pagina — si
+       vedeva un lieve stacco sul bordo superiore. */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%);
   }
   .mj-casa__testo {
     grid-column: 1;

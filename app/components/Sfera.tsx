@@ -187,7 +187,15 @@ void main() {
      divide lo spazio con un titolo a scala enorme, e a quella distanza
      gli entrava dentro. Con «sposta» attivo la macchina da presa
      arretra e la sfera resta grande ma lascia respirare il testo. */
-  vec3 occhio = vec3(0.0, 0.46, 2.95 + 1.05 * step(0.01, sposta));
+  /* ⚠️ E PIÙ BASSA, ALL'ALTEZZA DELLA BASE DELLA SFERA. L'orizzonte sta
+     sempre all'altezza dell'occhio: con l'occhio al centro della sfera
+     (il caso stretto) la sfera lo attraversa e il riflesso le resta
+     lontano sotto; con l'occhio alla sua base la sfera si POSA sulla
+     linea e il riflesso le parte attaccato, schiacciato dalla
+     prospettiva come su un pavimento lucido visto di taglio. È la
+     seconda revisione di finitura che l'ha chiesto, e ha ragione. */
+  float largo = step(0.01, sposta);
+  vec3 occhio = vec3(0.0, 0.46 - 0.96 * largo, 2.95 + 1.45 * largo);
   vec3 raggio = normalize(vec3(uv, -1.75));
 
   float respiro = sin(t * 0.55) * 0.055;
@@ -200,12 +208,15 @@ void main() {
      torna al centro: «sposta» arriva da fuori, misurato sulla tela.
      (Niente accenti gravi in questi commenti: siamo dentro un template
      literal di JavaScript, e un accento grave lo chiuderebbe.) */
-  /* E PIÙ ALTA, sempre su schermo largo: lascia sotto di sé una fascia
-     di pavimento vera, con il riflesso staccato dalla sfera, e non
-     tocca la targa che sta in basso a destra. */
-  float alza = 0.60 * step(0.01, sposta);
-  vec3 centro = vec3(sposta, 0.46 + respiro + alza, 0.0);
+  vec3 centro = vec3(sposta, 0.46 + respiro, 0.0);
   float R = 1.0;
+
+  /* ⚠️ L'ORIZZONTE SFUMA A SINISTRA, dove sta la colonna del testo: una
+     linea di scena che passa fra la frase corretta e il suo perché
+     taglia la lettura. Da -0,3 a 0,2 (in unità della tela) si accende,
+     cioè a destra di dove finisce il titolo; a sinistra non c'è. Sul
+     telefono (tela stretta) resta intero: lì il testo è sotto. */
+  float lato = mix(1.0, smoothstep(-0.3, 0.2, uv.x), largo);
 
   /* ⚠️ NIENTE ROTAZIONE COSTANTE. Prima c'era un "t * 0.11" che faceva
      girare la testa in continuazione: una testa che gira sempre non
@@ -240,7 +251,7 @@ void main() {
   vec3 col = FONDO;
 
   // Un alone dietro, che stacca la sfera dal nero.
-  float alone = exp(-length(uv - vec2(sposta, 0.25 + alza * 0.5)) * 1.9);
+  float alone = exp(-length(uv - vec2(sposta, 0.25 + 0.13 * largo)) * 1.9);
   col += vec3(0.10, 0.14, 0.24) * alone * 0.55;
 
   /* ⚠️ L'ORIZZONTE SI DEVE VEDERE. Un pavimento senza orizzonte è un
@@ -248,7 +259,7 @@ void main() {
      di scendere, il cielo si schiarisce di un soffio, e il pavimento
      fa lo stesso verso la distanza (più sotto). È quello che fa
      leggere «una sfera sopra un piano» anche senza testo. */
-  col += vec3(0.05, 0.08, 0.14) * exp(-abs(raggio.y) * 9.0) * step(0.0, raggio.y);
+  col += vec3(0.05, 0.08, 0.14) * exp(-abs(raggio.y) * 9.0) * step(0.0, raggio.y) * lato;
 
   // ── La sfera ───────────────────────────────────────────────
   vec3 oc = occhio - centro;
@@ -277,7 +288,7 @@ void main() {
       // l'orizzonte, come un piano che si allontana.
       float lontano = exp(-length(pp.xz) * 0.22);
       vec3 pav = FONDO + vec3(0.05, 0.07, 0.11) * lontano;
-      pav += vec3(0.06, 0.09, 0.15) * (1.0 - exp(-dp * 0.16));
+      pav += vec3(0.06, 0.09, 0.15) * (1.0 - exp(-dp * 0.16)) * lato;
 
       /* ⚠️ IL PIANO È UNA SUPERFICIE VIVA, NON UNO SFONDO: quando
          Movijoy parla, onde concentriche partono da sotto la sfera e

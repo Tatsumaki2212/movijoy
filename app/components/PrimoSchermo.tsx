@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Sfera from "./Sfera";
-import Richiesta from "./Richiesta";
 
 /**
  * Il primo schermo: un oggetto solo.
@@ -131,7 +130,16 @@ export default function PrimoSchermo() {
           <h2 className="mj-targa__titolo">
             Il tuo Movijoy: con i tuoi criteri, sulla tua piattaforma o solo per te.
           </h2>
-          <Richiesta variante="targa" />
+          {/* L'azione: non un modulo, ma vederlo lavorare — due scene dal
+              vivo, poi il dialogo con lui. Decisione di Lorenzo del 13
+              ottobre 2026, al posto della candidatura. */}
+          <p className="mj-targa__dice">
+            Due scene dal vivo, poi cinque domande: ti risponde una persona, non un
+            sistema.
+          </p>
+          <a href="/all-opera" className="mj-tasto">
+            Vedi Movijoy all&apos;opera
+          </a>
         </div>
       </div>
     </section>

@@ -13,12 +13,10 @@ import { SITO } from "./lib/sito";
  * Next genera: mappa e canonical devono dire lo stesso indirizzo.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
+  /* /parla e /grazie non entrano in mappa: sono tappe di un percorso,
+     noindex, non pagine da cercare. */
   return [
-    {
-      url: SITO,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 1,
-    },
+    { url: SITO, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },
+    { url: `${SITO}/all-opera`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   ];
 }

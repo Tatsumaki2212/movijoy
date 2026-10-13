@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./movijoy.css";
 import PrimoSchermo from "./components/PrimoSchermo";
-import Richiesta from "./components/Richiesta";
 import { NOME_SITO, CHELIVELLO, NOME_CHELIVELLO } from "./lib/sito";
 import { SOCIETA, rigaSocieta } from "./lib/societa";
 import { TITOLARE } from "./lib/titolare";
@@ -215,8 +214,8 @@ export default function Casa() {
                 noi sulla tua piattaforma: un accordo per cliente, non un
                 prodotto da scaffale.
               </p>
-              <a className="mj-porte__vai" href="#richiesta">
-                Chiedilo per la mia piattaforma
+              <a className="mj-porte__vai" href="/all-opera">
+                Vedilo su un sito
               </a>
             </div>
             <div>
@@ -228,8 +227,8 @@ export default function Casa() {
                 non sa fare. Riservato: non si mescola con quello di nessun
                 altro.
               </p>
-              <a className="mj-porte__vai" href="#richiesta">
-                Lo voglio per me
+              <a className="mj-porte__vai" href="/all-opera">
+                Vedilo al lavoro per te
               </a>
             </div>
           </div>
@@ -300,19 +299,26 @@ export default function Casa() {
           </div>
         </section>
 
-        {/* ── La richiesta, per intero ──────────────────────────── */}
-        <section className="mj-foglio mj-sezione mj-riga-filo mj-richiesta" id="richiesta">
-          <div className="mj-due">
-            <div>
-              <h2 className="mj-sezione__titolo">Chiedi il tuo Movijoy.</h2>
-              <p className="mj-sezione__dice">
-                Non c&apos;è un prezzo da scaffale, perché non c&apos;è un Movijoy
-                uguale per tutti: i criteri si definiscono per chi lo usa. Dicci
-                chi sei e che cosa ti serve; rispondono Lorenzo e Gaspare, non
-                un sistema.
-              </p>
-            </div>
-            <Richiesta variante="completo" />
+        {/* ── La chiusura: vederlo, poi parlarci ───────────────── */}
+        <section className="mj-foglio mj-chiusura mj-riga-filo">
+          <h2 className="mj-titolo">
+            Vedilo lavorare.
+            <br />
+            <em>Poi parlaci.</em>
+          </h2>
+          <p className="mj-apertura__dice" style={{ margin: "0 auto 2.25rem" }}>
+            Non c&apos;è un prezzo da scaffale, perché non c&apos;è un Movijoy uguale
+            per tutti: i criteri si definiscono per chi lo usa. Guardalo
+            all&apos;opera, poi rispondi alle sue cinque domande: ti scrivono
+            Lorenzo e Gaspare.
+          </p>
+          <div className="mj-azioni">
+            <a href="/all-opera" className="mj-tasto">
+              Vedi Movijoy all&apos;opera
+            </a>
+            <a href="/parla" className="mj-tasto mj-tasto--vuoto">
+              Vai dritto al dialogo
+            </a>
           </div>
         </section>
 
