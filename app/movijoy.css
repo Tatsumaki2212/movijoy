@@ -1296,6 +1296,36 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
   gap: 0.6rem;
 }
 
+/* Il tasto della voce: una pastiglia da strumento, gialla quando è
+   accesa. Sta in cima al dialogo, prima della prima domanda. */
+.mj-voce {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-self: start;
+  padding: 0.45rem 0.8rem;
+  background: transparent;
+  color: var(--tenue);
+  border: 1px solid var(--filo-forte);
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.mj-voce:hover {
+  color: var(--chiaro);
+  border-color: var(--chiaro);
+}
+
+.mj-voce[aria-pressed="true"] {
+  color: var(--giallo);
+  border-color: var(--giallo);
+}
+
 @media (max-width: 900px) {
   .mj-dialogo {
     grid-template-columns: 1fr;

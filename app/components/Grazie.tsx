@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Sfera from "./Sfera";
+import Voce, { useVoce } from "./Voce";
+import { di } from "../lib/voce";
 
 /**
  * Il grazie di Movijoy, detto muovendo la bocca. Nome ed email arrivano
@@ -27,12 +29,35 @@ export default function Grazie() {
 
   const frase = `Grazie${chi.nome ? `, ${chi.nome}` : ""}. Le tue risposte sono arrivate. Lorenzo e Gaspare le leggono e ti scrivono${chi.email ? ` a ${chi.email}` : ""}, di solito in giornata — non un sistema, loro.`;
 
+  const [voce, cambiaVoce] = useVoce();
+
+  /* Battitura e voce insieme, bocca in moto finché non finiscono tutte e
+     due — lo stesso schema del dialogo. Il grazie arriva con una
+     navigazione interna, quindi il gesto dell'ultimo clic vale ancora e
+     la voce può partire da sola. */
   useEffect(() => {
     const fermo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let giro = 0;
+    let ferma = () => {};
+    let battituraFinita = false;
+    let voceFinita = !voce;
+    const chiudi = () => {
+      if (battituraFinita && voceFinita) setParla(false);
+    };
     const avvio = window.setTimeout(() => {
+      if (voce) {
+        ferma = di(frase, {
+          allaFine: () => {
+            voceFinita = true;
+            chiudi();
+          },
+        });
+      }
       if (fermo) {
         setScritto(frase.length);
+        battituraFinita = true;
+        if (voce) setParla(true);
+        chiudi();
         return;
       }
       setScritto(0);
@@ -43,15 +68,17 @@ export default function Grazie() {
         setScritto(i);
         if (i >= frase.length) {
           window.clearInterval(giro);
-          setParla(false);
+          battituraFinita = true;
+          chiudi();
         }
       }, MS);
     }, 0);
     return () => {
       window.clearTimeout(avvio);
       window.clearInterval(giro);
+      ferma();
     };
-  }, [frase]);
+  }, [frase, voce]);
 
   const mostrato = scritto === null ? frase.length : scritto;
 
@@ -61,6 +88,7 @@ export default function Grazie() {
         <Sfera classe="mj-tela mj-tela--dialogo" parla={parla} />
       </div>
       <div className="mj-dialogo__chat">
+        <Voce accesa={voce} cambia={cambiaVoce} />
         <h1 className="mj-sezione__titolo">Ricevuto.</h1>
         <p className="mj-bolla mj-bolla--movijoy mj-bolla--viva">
           {frase.slice(0, mostrato)}

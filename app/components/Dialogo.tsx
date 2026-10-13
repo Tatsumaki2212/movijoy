@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Sfera from "./Sfera";
+import Voce, { useVoce } from "./Voce";
+import { di } from "../lib/voce";
 
 /**
  * Parla con Movijoy: le domande di profilazione, una per volta.
@@ -88,21 +90,39 @@ export default function Dialogo() {
   const domanda = DOMANDE[passo];
   const frase = dice(domanda, risposte);
   const finita = scritto >= frase.length;
+  const [voce, cambiaVoce] = useVoce();
 
   useEffect(() => {
     aperto.current = Date.now();
   }, []);
 
-  /* La battitura: una lettera ogni 38 ms, bocca in movimento; con meno
-     movimento chiesto la frase è intera subito. */
+  /* La battitura e la voce partono insieme; la bocca si muove finché non
+     hanno finito TUTTE E DUE. Senza voce — spenta, bloccata dal browser,
+     o senza una voce italiana — la bocca segue la battitura. Tutto parte
+     al tick dopo, mai in modo sincrono nel corpo dell'effetto. */
   useEffect(() => {
     const fermo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let giro = 0;
-    /* Tutto parte al tick dopo, mai in modo sincrono nel corpo
-       dell'effetto: il React Compiler lo segnala come render a cascata. */
+    let ferma = () => {};
+    let battituraFinita = false;
+    let voceFinita = !voce;
+    const chiudi = () => {
+      if (battituraFinita && voceFinita) setParla(false);
+    };
     const avvio = window.setTimeout(() => {
+      if (voce) {
+        ferma = di(frase, {
+          allaFine: () => {
+            voceFinita = true;
+            chiudi();
+          },
+        });
+      }
       if (fermo) {
         setScritto(frase.length);
+        battituraFinita = true;
+        if (voce) setParla(true);
+        chiudi();
         return;
       }
       setScritto(0);
@@ -113,16 +133,18 @@ export default function Dialogo() {
         setScritto(i);
         if (i >= frase.length) {
           window.clearInterval(giro);
-          setParla(false);
+          battituraFinita = true;
+          chiudi();
         }
       }, MS);
     }, 0);
     return () => {
       window.clearTimeout(avvio);
       window.clearInterval(giro);
+      ferma();
       setParla(false);
     };
-  }, [frase]);
+  }, [frase, voce]);
 
   useEffect(() => {
     if (finita) campo.current?.focus();
@@ -188,6 +210,8 @@ export default function Dialogo() {
       </div>
 
       <div className="mj-dialogo__chat" aria-live="polite">
+        <Voce accesa={voce} cambia={cambiaVoce} />
+
         {/* Le domande già fatte e le risposte date restano in vista: un
             dialogo che cancella quello che hai detto non è un dialogo. */}
         {DOMANDE.slice(0, passo).map((d) => (

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./movijoy.css";
 import PrimoSchermo from "./components/PrimoSchermo";
 import { NOME_SITO, CHELIVELLO, NOME_CHELIVELLO } from "./lib/sito";
@@ -316,9 +317,9 @@ export default function Casa() {
             <a href="/all-opera" className="mj-tasto">
               Vedi Movijoy all&apos;opera
             </a>
-            <a href="/parla" className="mj-tasto mj-tasto--vuoto">
+            <Link href="/parla" className="mj-tasto mj-tasto--vuoto">
               Vai dritto al dialogo
-            </a>
+            </Link>
           </div>
         </section>
 

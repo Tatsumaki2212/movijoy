@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "../movijoy.css";
 import Cornice from "../components/Cornice";
 import DemoOpera from "../components/DemoOpera";
@@ -45,9 +46,12 @@ export default function AllOpera() {
           serve, e Lorenzo e Gaspare ti rispondono.
         </p>
         <div className="mj-azioni">
-          <a href="/parla" className="mj-tasto">
+          {/* <Link>, non <a>: la navigazione interna conserva il gesto del
+              clic, e sul dialogo la voce può partire senza un secondo
+              tocco. */}
+          <Link href="/parla" className="mj-tasto">
             Parla con Movijoy
-          </a>
+          </Link>
         </div>
       </section>
     </Cornice>
