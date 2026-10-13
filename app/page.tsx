@@ -175,7 +175,9 @@ export default function Casa() {
         Salta al contenuto
       </a>
 
-      <div className="mj-foglio">
+      {/* La barra sta SOPRA la tela del primo schermo, che le passa
+          sotto: un oggetto solo, senza un gradino tonale fra i due. */}
+      <div className="mj-foglio mj-testa">
         <header className="mj-barra">
           <span className="mj-marchio">
             Movijoy<span>.</span>
@@ -183,7 +185,10 @@ export default function Casa() {
           <div className="mj-barra__dati">
             <span className="mj-etichetta">Correzione dello scritto</span>
             <span className="mj-etichetta">Criteri Cambridge · IELTS</span>
-            <span className="mj-etichetta">Attivo adesso</span>
+            {/* ⚠️ Niente «Attivo adesso»: afferma uno stato vivo che su
+                questo dominio non si può provare. Venti secondi è una
+                misura vera del motore. */}
+            <span className="mj-etichetta">Risposta in venti secondi</span>
           </div>
         </header>
       </div>
@@ -219,8 +224,9 @@ export default function Casa() {
               <p className="mj-sezione__dice">
                 Una persona sola. Il tuo Movijoy, configurato su di te e sui
                 tuoi obiettivi: corregge in venti secondi, spiega riga per riga
-                e tiene il conto di quello che sbagli tu. Riservato: non si
-                mescola con quello di nessun altro.
+                da quale frase italiana nasce l&apos;errore, e dice quello che
+                non sa fare. Riservato: non si mescola con quello di nessun
+                altro.
               </p>
               <a className="mj-porte__vai" href="#richiesta">
                 Lo voglio per me

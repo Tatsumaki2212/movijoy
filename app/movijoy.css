@@ -665,15 +665,28 @@
   padding-bottom: clamp(2rem, 6vh, 4.5rem);
 }
 
-/* La tela a tutto schermo: sborda di poco ai lati così il pavimento
-   arriva fino al bordo e la sfera non sembra dentro una scatola.
-   ⚠️ IN ALTO NON SBORDA: la prima versione aveva -4% anche sopra, e
-   quei trentasei pixel coprivano la barra con il marchio — la sezione
-   viene dopo nel DOM e si dipinge sopra. */
+/* La tela a tutto schermo: sborda ai lati così il pavimento arriva
+   fino al bordo, e sborda IN ALTO di quanto è alta la barra, così le
+   passa sotto e fra barra e tela non c'è un gradino tonale: l'oggetto
+   è uno solo. La barra sta sopra per z-index (.mj-testa, qui sotto),
+   non per sottrazione della tela. */
 .mj-tela--casa {
   position: absolute;
-  inset: 0 -4% 0 -4%;
+  inset: -3.8rem -4% 0 -4%;
   z-index: 0;
+}
+
+/* La barra sopra la tela. Batte «.mj > *:not(.reg-campo)» per ordine,
+   a parità di specificità. */
+.mj > .mj-testa {
+  z-index: 4;
+}
+
+/* Le barre di scorrimento — della pagina e del campo lungo del modulo —
+   tinte dal mondo, non grigie di sistema. */
+.mj,
+.mj textarea {
+  scrollbar-color: var(--filo-forte) var(--nero);
 }
 
 .mj-casa__testo {
@@ -731,33 +744,49 @@
   padding: 0 0.1em 2px;
 }
 
-/* Le due frasi stanno in un blocco loro, così la copia a specchio si
-   appende sotto la frase e non sotto il perché. */
+/* ── La firma: la frase si raddrizza dal riflesso ───────────────
+   Le due frasi stanno in un blocco solo. Con JavaScript, nello stato
+   «fermo» (quello iniziale) il blocco sta a specchio SUL PIANO: giù,
+   nella fascia del pavimento, capovolto e un po' sfocato, come un
+   riflesso. A «raddrizza» lo stesso blocco sale e si gira fino al suo
+   posto sotto il titolo. Non è nascosto in nessun momento: è solo
+   altrove, a specchio. Senza script o con meno movimento chiesto, sta
+   dritto da subito. */
 .mj-correzione__frasi {
   position: relative;
+  transform-origin: 50% 50%;
+  transition:
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* La copia a specchio: vive un istante nel riflesso, poi sparisce
-   mentre quella dritta resta. Non nasconde mai il testo vero. */
-.mj-correzione__specchio {
-  position: absolute;
-  left: 0;
-  top: 100%;
-  margin: 0.6rem 0 0;
-  font-size: clamp(1.15rem, 1.8vw, 1.55rem);
-  color: var(--tenue);
-  text-decoration: line-through;
-  text-decoration-color: var(--rosso);
-  text-decoration-thickness: 2px;
-  transform: scaleY(-1);
-  opacity: 0;
-  filter: blur(1.5px);
-  pointer-events: none;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+html[data-js] .mj-casa[data-fase="fermo"] .mj-correzione__frasi {
+  transform: translateY(min(36vh, 330px)) scaleY(-1);
+  opacity: 0.5;
+  filter: blur(1px);
 }
 
-.mj-correzione__specchio--viva {
-  opacity: 0.3;
+/* Finché la frase è nel riflesso, il perché aspetta in tono minore: si
+   accende quando Movijoy lo dice. */
+html[data-js] .mj-casa[data-fase="fermo"] .mj-correzione__perche,
+html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
+  opacity: 0.55;
+}
+
+.mj-correzione__perche {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-js] .mj-casa[data-fase="fermo"] .mj-correzione__frasi {
+    transform: none;
+    opacity: 1;
+    filter: none;
+  }
+  html[data-js] .mj-casa[data-fase="fermo"] .mj-correzione__perche {
+    opacity: 1;
+  }
 }
 
 /* Il perché, appuntato alla parola con una lineetta gialla che scende
@@ -1120,7 +1149,11 @@
     width: 100%;
     margin-top: 1rem;
   }
-  .mj-correzione__specchio {
-    display: none;
+  /* Sul telefono il piano è la fascia in cima e la frase sta sotto il
+     titolo: non c'è un pavimento dove posarla. La firma resta — la
+     frase parte capovolta al suo posto e si raddrizza lì — invece di
+     sparire: una presenza, non un viaggio. */
+  html[data-js] .mj-casa[data-fase="fermo"] .mj-correzione__frasi {
+    transform: scaleY(-1);
   }
 }

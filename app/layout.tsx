@@ -52,8 +52,21 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /* ⚠️ data-js STA NELL'HTML CHE ARRIVA DAL SERVER, e il <noscript>
+     qui sotto lo annulla per chi non ha JavaScript. Il primo schermo
+     mette la frase a specchio sul piano solo sotto html[data-js]: con
+     lo script, poi si raddrizza; senza script, lo stile dentro
+     <noscript> la rimette dritta prima ancora del primo disegno.
+     La prima versione aggiungeva l'attributo con uno script in testa e
+     React, all'idratazione, segnalava un attributo che il server non
+     aveva reso: così invece server e client combaciano. */
   return (
-    <html lang="it" className={`${archivo.variable} ${archivoNarrow.variable}`}>
+    <html lang="it" data-js="" className={`${archivo.variable} ${archivoNarrow.variable}`}>
+      <head>
+        <noscript>
+          <style>{`.mj-casa[data-fase="fermo"] .mj-correzione__frasi{transform:none !important;opacity:1 !important;filter:none !important}.mj-casa[data-fase="fermo"] .mj-correzione__perche{opacity:1 !important}`}</style>
+        </noscript>
+      </head>
       <body>
         {children}
         <Analytics />

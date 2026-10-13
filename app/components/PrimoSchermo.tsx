@@ -32,19 +32,25 @@ const ESEMPIO = {
     "«Entro venerdì» si dice by Friday, non «within Friday». Within vuol dire «nel giro di»: within three days = entro tre giorni da adesso.",
 };
 
-/* I tempi, in millisecondi: lo specchio, il raddrizzarsi, il parlato.
-   La durata del parlato segue la lunghezza del perché a ~55 ms per
-   carattere, il ritmo di una lettura ad alta voce. */
-const T_SPECCHIO = 500;
-const T_RADDRIZZA = 1500;
-const T_PARLA = 2100;
+/* I tempi, in millisecondi: quanto la frase resta a specchio sul piano,
+   quando si raddrizza, quando parte il parlato. La durata del parlato
+   segue la lunghezza del perché a ~55 ms per carattere, il ritmo di
+   una lettura ad alta voce. */
+const T_RADDRIZZA = 1400;
+const T_PARLA = 2600;
 const MS_PER_CARATTERE = 55;
 
 export default function PrimoSchermo() {
-  /* «fermo» = frase già dritta e perché già tutto scritto. È lo stato
-     iniziale sul server e per chi chiede meno movimento: così l'HTML
-     che arriva è completo e nessuno aspetta un'animazione per leggere. */
-  const [fase, setFase] = useState<"fermo" | "specchio" | "raddrizza" | "parla" | "finito">("fermo");
+  /* ⚠️ LA FRASE È UNA SOLA, E SI RADDRIZZA PER DAVVERO. Nello stato
+     «fermo» il CSS la mette a specchio sul piano — ma solo quando c'è
+     JavaScript (html[data-js], scritto dal layout prima di tutto) e
+     non è chiesto meno movimento: così chi non ha script o non vuole
+     movimento la vede dritta da subito, e nessuno la vede saltare.
+     A «raddrizza» la stessa frase sale e si gira fino al suo posto
+     sotto il titolo: è il momento che il contratto promette, non una
+     dissolvenza di una copia. Sul server lo stato è «fermo» e il
+     perché è tutto scritto: l'HTML che arriva è completo. */
+  const [fase, setFase] = useState<"fermo" | "raddrizza" | "parla" | "finito">("fermo");
   const [parla, setParla] = useState(false);
   const [detti, setDetti] = useState(ESEMPIO.perche.length);
 
@@ -54,7 +60,6 @@ export default function PrimoSchermo() {
     const tempi: number[] = [];
     const dopo = (ms: number, f: () => void) => tempi.push(window.setTimeout(f, ms));
 
-    dopo(T_SPECCHIO, () => setFase("specchio"));
     dopo(T_RADDRIZZA, () => setFase("raddrizza"));
     dopo(T_PARLA, () => {
       setFase("parla");
@@ -83,8 +88,6 @@ export default function PrimoSchermo() {
     };
   }, []);
 
-  const specchiata = fase === "specchio";
-
   return (
     <section className="mj-foglio mj-casa" data-fase={fase}>
       <Sfera classe="mj-tela mj-tela--casa" parla={parla} />
@@ -105,12 +108,6 @@ export default function PrimoSchermo() {
               {ESEMPIO.bene.prima}
               <mark className="mj-correzione__parola">{ESEMPIO.bene.parola}</mark>
               {ESEMPIO.bene.dopo}
-            </p>
-            {/* La copia a specchio: decorativa, nascosta a chi legge con lo
-                schermo, appesa sotto la frase. Il testo vero è quello
-                dritto qui sopra. */}
-            <p className={`mj-correzione__specchio${specchiata ? " mj-correzione__specchio--viva" : ""}`} aria-hidden="true">
-              {ESEMPIO.male}
             </p>
           </div>
           <div className="mj-correzione__perche">

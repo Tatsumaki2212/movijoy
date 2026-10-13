@@ -187,7 +187,7 @@ void main() {
      divide lo spazio con un titolo a scala enorme, e a quella distanza
      gli entrava dentro. Con «sposta» attivo la macchina da presa
      arretra e la sfera resta grande ma lascia respirare il testo. */
-  vec3 occhio = vec3(0.0, 0.46, 2.95 + 0.85 * step(0.01, sposta));
+  vec3 occhio = vec3(0.0, 0.46, 2.95 + 1.05 * step(0.01, sposta));
   vec3 raggio = normalize(vec3(uv, -1.75));
 
   float respiro = sin(t * 0.55) * 0.055;
@@ -200,7 +200,11 @@ void main() {
      torna al centro: «sposta» arriva da fuori, misurato sulla tela.
      (Niente accenti gravi in questi commenti: siamo dentro un template
      literal di JavaScript, e un accento grave lo chiuderebbe.) */
-  vec3 centro = vec3(sposta, 0.46 + respiro, 0.0);
+  /* E PIÙ ALTA, sempre su schermo largo: lascia sotto di sé una fascia
+     di pavimento vera, con il riflesso staccato dalla sfera, e non
+     tocca la targa che sta in basso a destra. */
+  float alza = 0.60 * step(0.01, sposta);
+  vec3 centro = vec3(sposta, 0.46 + respiro + alza, 0.0);
   float R = 1.0;
 
   /* ⚠️ NIENTE ROTAZIONE COSTANTE. Prima c'era un "t * 0.11" che faceva
@@ -236,8 +240,15 @@ void main() {
   vec3 col = FONDO;
 
   // Un alone dietro, che stacca la sfera dal nero.
-  float alone = exp(-length(uv - vec2(sposta, 0.25)) * 1.9);
+  float alone = exp(-length(uv - vec2(sposta, 0.25 + alza * 0.5)) * 1.9);
   col += vec3(0.10, 0.14, 0.24) * alone * 0.55;
+
+  /* ⚠️ L'ORIZZONTE SI DEVE VEDERE. Un pavimento senza orizzonte è un
+     nero qualunque: qui, appena sopra la linea in cui il raggio smette
+     di scendere, il cielo si schiarisce di un soffio, e il pavimento
+     fa lo stesso verso la distanza (più sotto). È quello che fa
+     leggere «una sfera sopra un piano» anche senza testo. */
+  col += vec3(0.05, 0.08, 0.14) * exp(-abs(raggio.y) * 9.0) * step(0.0, raggio.y);
 
   // ── La sfera ───────────────────────────────────────────────
   vec3 oc = occhio - centro;
@@ -262,9 +273,11 @@ void main() {
     if (dp > 0.0) {
       vec3 pp = occhio + raggio * dp;
 
-      // Il pavimento: nero, con una luce lontana.
+      // Il pavimento: nero, con una luce lontana — e più chiaro verso
+      // l'orizzonte, come un piano che si allontana.
       float lontano = exp(-length(pp.xz) * 0.22);
       vec3 pav = FONDO + vec3(0.05, 0.07, 0.11) * lontano;
+      pav += vec3(0.06, 0.09, 0.15) * (1.0 - exp(-dp * 0.16));
 
       /* ⚠️ IL PIANO È UNA SUPERFICIE VIVA, NON UNO SFONDO: quando
          Movijoy parla, onde concentriche partono da sotto la sfera e
@@ -291,7 +304,10 @@ void main() {
           /* Il riflesso si spegne con la distanza: un riflesso nitido
              fino al bordo dello schermo è uno specchio, non un
              pavimento. */
-          float fade = exp(-length(pp.xz - centro.xz) * 0.95) * 0.42;
+          /* Più intenso e più lento a spegnersi di prima (0,42 e 0,95):
+             a quei valori il riflesso era un alone che non si vedeva
+             nelle catture, e un piano che non riflette non è lucido. */
+          float fade = exp(-length(pp.xz - centro.xz) * 0.7) * 0.66;
           pav = mix(pav, cr, clamp(fade, 0.0, 1.0));
         }
       }
@@ -494,7 +510,11 @@ export default function Sfera({ classe, parla = false }: { classe?: string; parl
       /* Su una tela larga la sfera sta a destra, per lasciare il titolo
          a sinistra sullo stesso piano; su una tela stretta (telefono)
          torna al centro. Misurato sulla tela, non sulla finestra. */
-      gl.uniform1f(uSposta, c.clientWidth / Math.max(c.clientHeight, 1) > 1.25 ? 0.62 : 0);
+      /* ⚠️ 0,70 È MISURATO SULLA CATTURA A 1440: a 0,52 il bordo sinistro
+         della sfera toccava «punto.» e quello in basso a destra l'angolo
+         della targa. Con la macchina da presa a 4,0 e la sfera alzata di
+         0,60, a 0,70 resta libera da tutti e due. */
+      gl.uniform1f(uSposta, c.clientWidth / Math.max(c.clientHeight, 1) > 1.25 ? 0.7 : 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
     richiesta = requestAnimationFrame(disegna);
