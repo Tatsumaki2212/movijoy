@@ -631,3 +631,496 @@
     opacity: 0.85;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LA CASA DI MOVIJOY.IT — il piano riflettente (13 ottobre 2026)
+   ═══════════════════════════════════════════════════════════════
+
+   Il primo schermo è un oggetto solo: la tela della sfera occupa tutto
+   lo schermo — il suo shader disegna già il pavimento e il riflesso —
+   e sopra ci stanno due cose: a sinistra il titolo con la correzione,
+   a destra sul piano la targa con l'email. Niente eroe diviso, niente
+   fila di schede. Le superfici del browser (selezione, cursore, fuoco,
+   barra di scorrimento) sono tinte dalla stessa tavolozza.
+   ─────────────────────────────────────────────────────────────── */
+
+.mj {
+  caret-color: var(--giallo);
+  accent-color: var(--rosso);
+}
+
+.mj a {
+  text-underline-offset: 3px;
+}
+
+.mj-casa {
+  position: relative;
+  /* Sottratta la barra in cima: barra più primo schermo fanno uno
+     schermo, così la targa con il tasto sta sopra la piega. */
+  min-height: min(calc(100svh - 3.8rem), 980px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-rows: 1fr auto;
+  column-gap: 2rem;
+  padding-bottom: clamp(2rem, 6vh, 4.5rem);
+}
+
+/* La tela a tutto schermo: sborda di poco ai lati così il pavimento
+   arriva fino al bordo e la sfera non sembra dentro una scatola.
+   ⚠️ IN ALTO NON SBORDA: la prima versione aveva -4% anche sopra, e
+   quei trentasei pixel coprivano la barra con il marchio — la sezione
+   viene dopo nel DOM e si dipinge sopra. */
+.mj-tela--casa {
+  position: absolute;
+  inset: 0 -4% 0 -4%;
+  z-index: 0;
+}
+
+.mj-casa__testo {
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: start;
+  padding-top: clamp(1.5rem, 5vh, 4rem);
+  max-width: 620px;
+}
+
+.mj-casa__targa {
+  position: relative;
+  z-index: 2;
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  width: min(100%, 380px);
+}
+
+/* ── La correzione, sotto il titolo ───────────────────────────── */
+
+.mj-correzione {
+  position: relative;
+  max-width: 34rem;
+}
+
+.mj-correzione__male,
+.mj-correzione__bene {
+  font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.mj-correzione__male {
+  color: var(--tenue);
+  text-decoration: line-through;
+  text-decoration-color: var(--rosso);
+  text-decoration-thickness: 2px;
+  margin-bottom: 0.3rem;
+}
+
+.mj-correzione__bene {
+  font-weight: 700;
+  color: var(--chiaro);
+}
+
+.mj-correzione__parola {
+  /* Il regolo giallo sotto la parola corretta, e un velo dello stesso
+     giallo dietro: a 1440 la sola riga da due pixel non si vedeva. */
+  background: rgba(246, 196, 83, 0.14);
+  color: inherit;
+  border-bottom: 3px solid var(--giallo);
+  padding: 0 0.1em 2px;
+}
+
+/* Le due frasi stanno in un blocco loro, così la copia a specchio si
+   appende sotto la frase e non sotto il perché. */
+.mj-correzione__frasi {
+  position: relative;
+}
+
+/* La copia a specchio: vive un istante nel riflesso, poi sparisce
+   mentre quella dritta resta. Non nasconde mai il testo vero. */
+.mj-correzione__specchio {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin: 0.6rem 0 0;
+  font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+  color: var(--tenue);
+  text-decoration: line-through;
+  text-decoration-color: var(--rosso);
+  text-decoration-thickness: 2px;
+  transform: scaleY(-1);
+  opacity: 0;
+  filter: blur(1.5px);
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mj-correzione__specchio--viva {
+  opacity: 0.3;
+}
+
+/* Il perché, appuntato alla parola con una lineetta gialla che scende
+   da sotto «By» fino alla spiegazione. */
+.mj-correzione__perche {
+  position: relative;
+  margin: 0;
+  padding: 1rem 0 0 1.25rem;
+  max-width: 24rem;
+}
+
+.mj-correzione__perche::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.5rem;
+  width: 1px;
+  height: calc(100% + 0.5rem);
+  background: var(--giallo);
+}
+
+.mj-correzione__perche p {
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--chiaro);
+}
+
+/* La parte non ancora detta è lì, leggibile, in tono minore: mentre
+   Movijoy parla si accende parola per parola. */
+.mj-correzione__nondetto {
+  color: var(--tenue);
+}
+
+.mj-cartellino {
+  display: inline-block;
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--giallo);
+  border: 1px solid rgba(246, 196, 83, 0.5);
+  padding: 0.2rem 0.45rem;
+}
+
+/* ── La targa sul piano ───────────────────────────────────────── */
+
+.mj-targa {
+  background: var(--chiaro);
+  color: var(--blu-cupo);
+  padding: 1.4rem 1.5rem 1.5rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+.mj-targa__titolo {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.mj-targa ::selection {
+  background: var(--blu);
+  color: #fff;
+}
+
+/* ── Il movimento: una sola entrata, orchestrata ─────────────── */
+
+.mj-casa__testo > * {
+  animation: mj-sale 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.mj-casa__testo > :nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.mj-casa__targa {
+  animation: mj-sale 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.22s backwards;
+}
+
+/* ── Il modulo ────────────────────────────────────────────────── */
+
+.mj-modulo {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.mj-modulo__trappola {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.mj-modulo__etichetta {
+  display: block;
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tenue);
+  margin-bottom: 0.4rem;
+}
+
+.mj-modulo__campo {
+  width: 100%;
+  box-sizing: border-box;
+  height: 3rem;
+  padding: 0 0.9rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--chiaro);
+  background: rgba(242, 243, 245, 0.04);
+  border: 1px solid var(--filo-forte);
+  border-radius: 0;
+}
+
+.mj-modulo__campo::placeholder {
+  color: var(--tenue);
+  opacity: 1;
+}
+
+.mj-modulo__campo:focus-visible {
+  outline: 2px solid var(--giallo);
+  outline-offset: 2px;
+  border-color: var(--chiaro);
+}
+
+.mj-modulo__campo--lungo {
+  height: auto;
+  min-height: 7rem;
+  padding: 0.8rem 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.mj-modulo__fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.mj-modulo__fila > .mj-modulo__etichetta {
+  flex: 1 1 100%;
+  margin-bottom: 0;
+}
+
+.mj-modulo__fila > .mj-modulo__campo {
+  flex: 1 1 11rem;
+  width: auto;
+}
+
+.mj-modulo__fila--fine {
+  justify-content: space-between;
+}
+
+.mj-modulo__nota {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--tenue);
+  max-width: 28rem;
+}
+
+.mj-modulo__nota a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.mj-modulo__stato {
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--giallo);
+}
+
+.mj-modulo__fatto {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.mj-modulo--fatto {
+  padding: 1rem 0;
+  border-top: 1px solid var(--giallo);
+}
+
+.mj-tasto:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}
+
+/* Dentro la targa chiara il modulo cambia pelle: inchiostro blu su
+   bianco, cursore rosso, note tinte dal blu — mai grigio. */
+.mj-targa .mj-modulo__etichetta,
+.mj-targa .mj-modulo__nota {
+  color: #4a5a72;
+}
+
+.mj-targa .mj-modulo__campo {
+  color: var(--blu-cupo);
+  background: #fff;
+  border-color: var(--blu);
+  caret-color: var(--rosso);
+}
+
+.mj-targa .mj-modulo__campo::placeholder {
+  color: #5f6f86;
+}
+
+.mj-targa .mj-modulo__campo:focus-visible {
+  outline-color: var(--rosso);
+  border-color: var(--blu-cupo);
+}
+
+.mj-targa .mj-modulo__stato {
+  color: #a30d26;
+}
+
+.mj-targa .mj-modulo--fatto {
+  border-top-color: var(--blu);
+}
+
+/* Le due porte dentro il modulo: due scelte con lo stesso peso. */
+.mj-modulo__chi {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.mj-modulo__porte {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.6rem;
+}
+
+.mj-porta {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--filo-forte);
+  cursor: pointer;
+  color: var(--tenue);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mj-porta:hover {
+  border-color: var(--chiaro);
+}
+
+.mj-porta input {
+  margin: 0.2rem 0 0;
+  flex: none;
+}
+
+.mj-porta b {
+  display: block;
+  color: var(--chiaro);
+  margin-bottom: 0.15rem;
+}
+
+.mj-porta--scelta {
+  border-color: var(--giallo);
+  background: rgba(246, 196, 83, 0.06);
+}
+
+.mj-porta:has(input:focus-visible) {
+  outline: 2px solid var(--giallo);
+  outline-offset: 2px;
+}
+
+/* ── Le due porte, come sezione ───────────────────────────────── */
+
+.mj-porte {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.mj-porte > div {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--filo);
+}
+
+.mj-porte .mj-sezione__titolo {
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+}
+
+.mj-porte .mj-sezione__dice {
+  margin-bottom: 1.25rem;
+}
+
+.mj-porte__vai {
+  display: inline-block;
+  color: var(--chiaro);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--giallo);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  transition: text-decoration-color 0.2s;
+}
+
+.mj-porte__vai:hover {
+  text-decoration-color: var(--chiaro);
+}
+
+/* La sezione della richiesta: il modulo nella colonna di destra. */
+.mj-richiesta .mj-due {
+  align-items: start;
+}
+
+/* ── Su un telefono ───────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .mj-casa {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: auto;
+    padding-bottom: 2.5rem;
+  }
+  /* La tela torna un pezzo di pagina in cima, alta quanto basta a far
+     vedere la sfera intera e il suo riflesso; la regola generale di
+     .mj-tela sul telefono (posizione, altezza, sfumatura in basso)
+     vale anche qui, e qui si ribadisce perché la riga a tutto schermo
+     qui sopra verrebbe dopo e la vincerebbe. */
+  .mj-tela--casa {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    /* ⚠️ MISURATO SU 390×844, NON SCELTO A OCCHIO. A 42vh il tasto
+       «Scrivimi» cadeva sessanta pixel sotto la piega; a 30vh il primo
+       schermo tiene barra, sfera, titolo, frase, perché e la targa
+       col tasto — che è il minimo perché una pagina che deve far
+       scrivere funzioni. */
+    height: min(30vh, 15rem);
+    grid-row: 1;
+    margin-bottom: 0.25rem;
+  }
+  .mj-casa__testo {
+    grid-column: 1;
+    grid-row: 2;
+    padding-top: 0;
+    max-width: none;
+  }
+  .mj-casa__targa {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: stretch;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .mj-correzione__specchio {
+    display: none;
+  }
+}

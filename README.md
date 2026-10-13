@@ -52,11 +52,42 @@ npm run dev
 Su Vercel: un progetto nuovo collegato a questo repository, con i
 domini `movijoy.it` e `www.movijoy.it` attaccati a lui (Vercel non
 permette lo stesso dominio su due progetti: se stava sul progetto di
-chelivello, va tolto da lì). Una sola variabile, facoltativa:
+chelivello, va tolto da lì). Il primario è il **www**: `movijoy.it`
+rimbalza su `www.movijoy.it`, e il canonical nel codice dice il www.
 
-- `NEXT_PUBLIC_SITE_URL` — l'indirizzo canonico, se diverso da
-  `https://movijoy.it`. Deve essere quello definitivo, che risponde
-  200 senza rimbalzi.
+Variabili d'ambiente del progetto Vercel:
+
+- `NEXT_PUBLIC_SITE_URL` — facoltativa, l'indirizzo canonico se diverso
+  da `https://www.movijoy.it`. Deve essere quello definitivo, che
+  risponde 200 senza rimbalzi.
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — **il progetto Supabase di
+  chelivello**, non uno nuovo. Il modulo della richiesta scrive nella
+  tabella `richieste_movijoy`, creata da `supabase/47-richieste-movijoy.sql`
+  nel repository di chelivello: quella migrazione va lanciata prima.
+  Senza queste due variabili il modulo risponde 503 e dice di scrivere
+  per posta.
+- `RESEND_API_KEY`, `RICHIESTE_A` — facoltative: l'avviso per posta a
+  chi risponde (l'indirizzo in `RICHIESTE_A`), mandato dopo il
+  salvataggio. Il mittente è `richieste@movijoy.it`: il dominio va
+  verificato su Resend, altrimenti l'avviso non parte e la richiesta
+  resta comunque nel database.
+
+## Il modulo della richiesta
+
+L'azione della pagina. Due vesti, un solo invio (`app/components/Richiesta.tsx`
+→ `app/api/richiesta/route.ts`): la targa nel primo schermo chiede la
+sola email; il modulo in fondo chiede nome, email, per chi è (piattaforma
+o privato) e due righe. Contro i robot: un campo nascosto e un tempo
+minimo dal caricamento. Il punto in cui aggiungere Turnstile, se un
+giorno serve, è segnato nella rotta.
+
+## La pagina principale, e come è nata
+
+Composizione scelta da Lorenzo il 13 ottobre 2026 sulla pagina di scelta
+di Impeccable: «Il piano riflettente». Il contratto di direzione sta in
+`.impeccable/surfaces/app-page-tsx.md`; la verità sul prodotto in
+`PRODUCT.md`. Le catture e gli schizzi in `.impeccable/review/` e
+`.impeccable/mocks/` non si committano.
 
 Controlli prima di un deploy: `npx tsc --noEmit`, `npm run lint`,
 `npm run build`.

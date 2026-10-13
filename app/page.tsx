@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./movijoy.css";
-import Sfera from "./components/Sfera";
+import PrimoSchermo from "./components/PrimoSchermo";
+import Richiesta from "./components/Richiesta";
 import { NOME_SITO, CHELIVELLO, NOME_CHELIVELLO } from "./lib/sito";
 import { SOCIETA, rigaSocieta } from "./lib/societa";
 import { TITOLARE } from "./lib/titolare";
@@ -8,63 +9,48 @@ import { TITOLARE } from "./lib/titolare";
 /**
  * movijoy.it — la casa.
  *
- * STESSA INTERFACCIA DI chelivello.it/movijoy, ALTRO MESTIERE. La
- * struttura è quella, sezione per sezione: apertura con la sfera, le
- * tre cifre, i sei calchi, le quattro cose che fa, le quattro che non
- * sa in colonna doppia, il piede. Ma quella pagina presenta una
- * funzione del registro a chi è già sul portale; questa presenta
- * MOVIJOY COME PRODOTTO a chi arriva da fuori, e vive in un sito suo.
+ * Composizione scelta da Lorenzo il 13 ottobre 2026 sulla pagina di
+ * scelta di Impeccable: «Il piano riflettente». Il contratto di
+ * direzione — tesi, mondo, storia, primo schermo, forma, finish — sta
+ * in .impeccable/surfaces/app-page-tsx.md e NON va copiato qui: questa
+ * è la pagina, non il suo brief.
  *
- * ⚠️ QUESTA PAGINA NON VENDE IL REGISTRO. Decisione di Lorenzo del 13
- * ottobre 2026: «movijoy.it non deve vendere il registro, deve vendere
- * Movijoy». Quindi qui non c'è nessun tasto verso gli abbonamenti di
- * chelivello, nessun prezzo del registro, nessun «compreso
- * nell'abbonamento», e nei dati strutturati non c'è `offers`.
- * L'OFFERTA DI MOVIJOY NON È ANCORA DEFINITA: i due posti in cui andrà
- * — il blocco `mj-azioni` nell'apertura e la sezione di chiusura —
- * sono vuoti e segnati qui sotto con ⚠️ OFFERTA. Si riempiono quando
- * l'offerta esiste, non prima, e con quella.
+ * ⚠️ QUESTA PAGINA NON VENDE IL REGISTRO. Nessun tasto verso gli
+ * abbonamenti di chelivello, nessun prezzo, nessun «compreso
+ * nell'abbonamento», niente `offers` nei dati strutturati. L'azione è
+ * una richiesta: chiedono, Lorenzo e Gaspare rispondono. L'OFFERTA di
+ * Movijoy non è ancora definita: quando lo sarà, il posto segnato
+ * ⚠️ OFFERTA qui sotto prende il prezzo e come si compra.
  *
- * ⚠️ NIENTE PROMESSE CHE DIPENDONO DALL'OFFERTA. «Senza limiti», «senza
- * crediti da contare», un prezzo: sono proprietà di un abbonamento,
- * non del software. Qui si dice solo quello che il software FA.
- *
- * ⚠️ OGNI NUMERO E OGNI FRASE È VERA. I sei calchi — sbagliato, giusto
- * e perché — sono copiati testualmente dai moduli di grammatica di
- * chelivello (app/lib/grammatica/, il modulo è nel commento di
- * ciascuno) e sono sei diversi dai sei della pagina del portale: due
- * domini con le stesse frasi si fanno concorrenza da soli.
- *
- * ⚠️ LA MEMORIA NON È NOMINATA, né come cosa che fa né come limite: il
- * portale la elenca fra le cose che non sa, ma il codice di
- * /api/correggi la manda nel prompt a ogni correzione. Finché non è
- * chiarito quale delle due sia vera, qui non se ne parla.
+ * ⚠️ OGNI NUMERO E OGNI FRASE È VERA. I calchi vengono testualmente dai
+ * moduli di grammatica di chelivello (app/lib/grammatica/) e sono
+ * diversi da quelli della pagina del portale. La memoria non è
+ * nominata, né come cosa che fa né come limite. Nessun cliente, nessun
+ * «usato da»: non esistono ancora.
  */
 
 export const metadata: Metadata = {
-  /* `absolute` scavalca il modello «%s — Movijoy» del layout: sulla
-     casa il nome c'è già nel titolo, e ripeterlo in coda è rumore nel
-     risultato di ricerca. */
   title: {
     absolute: "Movijoy — l'intelligenza artificiale che corregge il tuo inglese scritto",
   },
   description:
-    "Mandi quello che hai scritto e Movijoy te lo corregge sui criteri ufficiali Cambridge e IELTS in venti secondi, con il motivo accanto a ogni riga. A qualunque ora. E ti dice anche quello che non sa fare.",
+    "Mandi quello che hai scritto e Movijoy te lo corregge sui criteri ufficiali Cambridge e IELTS in venti secondi, con il motivo accanto a ogni riga. Con i tuoi criteri, sulla tua piattaforma o solo per te.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "it_IT",
     url: "/",
     siteName: NOME_SITO,
-    title: "Movijoy — ti corregge l'inglese scritto, riga per riga",
+    title: "Movijoy — un assistente di inglese con i tuoi criteri",
     description:
-      "Correzione sui criteri ufficiali Cambridge e IELTS in venti secondi, con il perché accanto a ogni riga. E dice quello che non sa fare.",
+      "Corregge l'inglese scritto sui criteri ufficiali, riga per riga, con il perché. Sulla tua piattaforma o solo per te.",
   },
 };
 
-/* I calchi: sbagliato, giusto e perché sono presi TESTUALMENTE dai
-   moduli di grammatica di chelivello (il nome del modulo è nel
-   commento). Sei lezioni diverse, e nessuna delle sei del portale. */
+/* I calchi: sbagliato, giusto e perché copiati TESTUALMENTE dai moduli
+   di grammatica di chelivello (il modulo è nel commento). Sei lezioni
+   diverse, nessuna delle sei del portale, e nessuna uguale a quella
+   del primo schermo. */
 const CALCHI = [
   {
     /* past-simple */
@@ -109,9 +95,9 @@ const CALCHI = [
   },
 ];
 
-/* Quello che Movijoy fa OGGI, in rete, adesso: i quattro motori che
-   esistono nel software. Se l'offerta di Movijoy ne comprenderà meno
-   di quattro, questo elenco si accorcia nello stesso momento. */
+/* Quello che Movijoy fa OGGI: i quattro motori che esistono. Se
+   l'offerta ne comprenderà meno, questo elenco si accorcia nello stesso
+   momento. */
 const OGGI = [
   {
     titolo: "Corregge quello che scrivi",
@@ -135,11 +121,9 @@ const OGGI = [
   },
 ];
 
-/* ⚠️ STESSO PESO GRAFICO DELL'ALTRA COLONNA, di proposito. Dire i
-   limiti ad alta voce è un principio del prodotto: una pagina che li
-   mette in fondo in grigio chiaro lo tradisce fingendo di rispettarlo.
-   Su un dominio dove nessuno ci conosce, è anche l'unica ragione per
-   credere al resto. */
+/* ⚠️ STESSO PESO GRAFICO DELL'ALTRA COLONNA, di proposito: dire i
+   limiti ad alta voce è un principio del prodotto, e su un dominio dove
+   nessuno ci conosce è l'unica ragione per credere al resto. */
 const NON_SA = [
   {
     titolo: "La pronuncia",
@@ -164,9 +148,7 @@ const NON_SA = [
 ];
 
 export default function Casa() {
-  /* ⚠️ SENZA `offers`, finché l'offerta non esiste. Dichiarare a Google
-     un prezzo che non è quello di Movijoy sarebbe la prima bugia del
-     dominio, e la più visibile. */
+  /* ⚠️ SENZA `offers`, finché l'offerta non esiste. */
   const datiStrutturati = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -175,7 +157,7 @@ export default function Casa() {
     operatingSystem: "Web",
     inLanguage: "it",
     description:
-      "Intelligenza artificiale che corregge l'inglese scritto sui criteri ufficiali Cambridge e IELTS, genera esercizi sugli errori di chi studia e valuta il parlato sul trascritto.",
+      "Intelligenza artificiale che corregge l'inglese scritto sui criteri ufficiali Cambridge e IELTS con criteri di risposta definiti per ogni cliente, genera esercizi sugli errori e valuta il parlato sul trascritto.",
     publisher: {
       "@type": "Organization",
       name: SOCIETA.denominazione,
@@ -207,74 +189,52 @@ export default function Casa() {
       </div>
 
       <main id="contenuto">
-        {/* ── Il primo schermo ──────────────────────────────── */}
-        <section className="mj-foglio mj-apertura">
-          <Sfera classe="mj-tela" />
+        {/* ── Il primo schermo: la sfera, il piano, la correzione, la targa ── */}
+        <PrimoSchermo />
 
-          <div className="mj-apertura__testo">
-            {/* ⚠️ PAROLE CORTE: a questa scala una parola lunga da sola
-                è più larga della colonna e spinge tutto sotto la piega. */}
-            <h1 className="mj-titolo">
-              Scrivi.
-              <br />
-              Ti dico dove
-              <br />
-              <em>perdi il punto.</em>
-            </h1>
-            <p className="mj-apertura__dice">
-              Movijoy è un&apos;intelligenza artificiale che corregge
-              l&apos;inglese scritto. Mandi quello che hai scritto — una email
-              a un cliente, un essay, una lettera — e in{" "}
-              <strong>venti secondi</strong> torna corretto sui criteri
-              ufficiali Cambridge e IELTS, riga per riga, con il motivo
-              accanto a ogni correzione. A qualunque ora, e senza farti pesare
-              che è la quarta volta che riscrivi la stessa email.
-            </p>
-            {/* ⚠️ OFFERTA — QUI VA IL BLOCCO `mj-azioni`: i tasti e il
-                prezzo di Movijoy. Resta vuoto finché l'offerta non è
-                definita. NON metterci nel frattempo un rimando al
-                registro o al test di chelivello. */}
-          </div>
-        </section>
-
-        {/* ── Le cifre ──────────────────────────────────────── */}
-        <section className="mj-foglio mj-riga-filo">
-          <div className="mj-conta">
+        {/* ── Due porte, lo stesso motore ───────────────────────── */}
+        <section className="mj-foglio mj-sezione mj-riga-filo">
+          <h2 className="mj-sezione__titolo">Due porte. Lo stesso motore.</h2>
+          <p className="mj-sezione__dice">
+            Movijoy è un&apos;intelligenza artificiale per l&apos;inglese con criteri
+            di risposta definiti per chi lo usa — non un chatbot a cui chiedere
+            consigli. Lo stesso motore entra da due porte.
+          </p>
+          <div className="mj-porte">
             <div>
-              <span className="mj-cifra">20″</span>
-              <span className="mj-etichetta">Per una correzione</span>
-              <p>
-                Quanto ci mette a renderti un testo con le bande e le note a
-                margine. A una persona ne costa quindici, di minuti: per questo
-                ovunque le correzioni sono poche e si aspettano.
+              <h3 className="mj-sezione__titolo">Sulla tua piattaforma</h3>
+              <p className="mj-sezione__dice">
+                Un&apos;azienda, una scuola, un sito. Movijoy risponde ai tuoi
+                utenti con i criteri che decidi tu: il tuo tono, i tuoi casi, le
+                parole che usi. I criteri li definiamo insieme e li mettiamo
+                noi sulla tua piattaforma: un accordo per cliente, non un
+                prodotto da scaffale.
               </p>
+              <a className="mj-porte__vai" href="#richiesta">
+                Chiedilo per la mia piattaforma
+              </a>
             </div>
             <div>
-              <span className="mj-cifra">4 e 9</span>
-              <span className="mj-etichetta">I criteri veri</span>
-              <p>
-                I quattro criteri con cui Cambridge valuta il Writing, e le nove
-                bande dell&apos;IELTS. Non una griglia nostra: quella con cui ti
-                leggerà l&apos;esaminatore.
+              <h3 className="mj-sezione__titolo">Il tuo assistente privato</h3>
+              <p className="mj-sezione__dice">
+                Una persona sola. Il tuo Movijoy, configurato su di te e sui
+                tuoi obiettivi: corregge in venti secondi, spiega riga per riga
+                e tiene il conto di quello che sbagli tu. Riservato: non si
+                mescola con quello di nessun altro.
               </p>
-            </div>
-            <div>
-              <span className="mj-cifra">Riga per riga</span>
-              <span className="mj-etichetta">Il perché, non solo il rosso</span>
-              <p>
-                Ogni correzione porta accanto il motivo: quale regola, e da
-                quale frase italiana nasce l&apos;errore. Un segno rosso insegna
-                a copiare la correzione; il perché insegna a non rifarlo.
-              </p>
+              <a className="mj-porte__vai" href="#richiesta">
+                Lo voglio per me
+              </a>
             </div>
           </div>
+          {/* ⚠️ OFFERTA — qui, sotto le due porte, andranno prezzo e modo di
+              acquisto quando l'offerta esiste. Fino ad allora l'azione è la
+              richiesta, e basta. */}
         </section>
 
-        {/* ── La prova ──────────────────────────────────────── */}
-        <section className="mj-foglio mj-sezione">
-          <h2 className="mj-sezione__titolo">
-            Non sbagli a caso. Sbagli in italiano.
-          </h2>
+        {/* ── La prova: errori veri, con la correzione ──────────── */}
+        <section className="mj-foglio mj-sezione mj-riga-filo">
+          <h2 className="mj-sezione__titolo">Non sbagli a caso. Sbagli in italiano.</h2>
           <p className="mj-sezione__dice">
             Gli errori che fa un italiano in inglese non sono distrazioni: sono
             italiano applicato all&apos;inglese, e tornano sempre uguali finché
@@ -282,7 +242,6 @@ export default function Casa() {
             sono. Questi sei vengono dalle sue lezioni di grammatica, non sono
             inventati per questa pagina.
           </p>
-
           <div className="mj-prove">
             {CALCHI.map((c) => (
               <div className="mj-prova" key={c.male}>
@@ -294,13 +253,13 @@ export default function Casa() {
           </div>
         </section>
 
-        {/* ── Cosa fa, oggi ─────────────────────────────────── */}
+        {/* ── Cosa fa, oggi ─────────────────────────────────────── */}
         <section className="mj-campo">
           <div className="mj-foglio mj-sezione">
             <h2 className="mj-sezione__titolo">Quattro cose, tutti i giorni.</h2>
             <p className="mj-sezione__dice">
-              Non è un chatbot a cui chiedere consigli: sono quattro mestieri
-              precisi, e li fa mentre tu lavori sul tuo inglese.
+              Sono quattro mestieri precisi, e li fa mentre tu lavori sul tuo
+              inglese — o mentre ci lavorano i tuoi utenti.
             </p>
             <ul className="mj-elenco">
               {OGGI.map((o) => (
@@ -313,18 +272,15 @@ export default function Casa() {
           </div>
         </section>
 
-        {/* ── E cosa non fa ─────────────────────────────────── */}
+        {/* ── E cosa non fa ─────────────────────────────────────── */}
         <section className="mj-foglio mj-sezione">
           <div className="mj-due">
             <div>
-              <h2 className="mj-sezione__titolo">
-                E quattro che non sa fare.
-              </h2>
+              <h2 className="mj-sezione__titolo">E quattro che non sa fare.</h2>
               <p className="mj-sezione__dice">
-                Un assistente che promette tutto viene creduto su niente.
-                Queste stanno scritte qui, con lo stesso peso delle altre,
-                perché sono la ragione per cui puoi fidarti del resto della
-                pagina.
+                Un assistente che promette tutto viene creduto su niente. Queste
+                stanno scritte qui, con lo stesso peso delle altre, perché sono
+                la ragione per cui puoi fidarti del resto della pagina.
               </p>
             </div>
             <ul className="mj-elenco mj-elenco--limiti">
@@ -338,22 +294,25 @@ export default function Casa() {
           </div>
         </section>
 
-        {/* ⚠️ OFFERTA — QUI VA LA CHIUSURA: `mj-foglio mj-chiusura
-            mj-riga-filo`, con il titolo, una riga sull'offerta e il blocco
-            `mj-azioni`. Dirà come si compra Movijoy, quando esisterà un
-            modo. Fino ad allora la pagina finisce con i limiti, che è un
-            finale onesto. */}
+        {/* ── La richiesta, per intero ──────────────────────────── */}
+        <section className="mj-foglio mj-sezione mj-riga-filo mj-richiesta" id="richiesta">
+          <div className="mj-due">
+            <div>
+              <h2 className="mj-sezione__titolo">Chiedi il tuo Movijoy.</h2>
+              <p className="mj-sezione__dice">
+                Non c&apos;è un prezzo da scaffale, perché non c&apos;è un Movijoy
+                uguale per tutti: i criteri si definiscono per chi lo usa. Dicci
+                chi sei e che cosa ti serve; rispondono Lorenzo e Gaspare, non
+                un sistema.
+              </p>
+            </div>
+            <Richiesta variante="completo" />
+          </div>
+        </section>
 
-        {/* ── Il piede ──────────────────────────────────────── */}
+        {/* ── Il piede ──────────────────────────────────────────── */}
         <div className="mj-foglio">
           <footer className="mj-piede">
-            {/* ⚠️ CHI STA DIETRO, per esteso. Su un sito che porterà a un
-                pagamento la legge (art. 2250 c.c.) chiede che sia scritto
-                chi vende; su un dominio nuovo è anche la sola cosa che
-                distingue un prodotto da una pagina comparsa dal nulla. La
-                riga su incassi e ricevute segue la regola di lib/titolare.ts.
-                Le pagine legali stanno su chelivello.it e nominano anche
-                questo dominio: una copia sola, apposta. */}
             <span className="mj-etichetta">
               {rigaSocieta()} · incassi e ricevute: {TITOLARE.nome}, P. IVA{" "}
               {TITOLARE.partitaIva}

@@ -23,6 +23,11 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* La barra di scorrimento è una superficie del browser e porta il
+     disegno come tutto il resto: tinta dal mondo scuro, non grigia di
+     sistema. */
+  scrollbar-color: rgba(242, 243, 245, 0.3) #070b11;
+  background: #070b11;
 }
 
 body {

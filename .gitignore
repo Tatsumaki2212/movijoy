@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Impeccable: catture e schizzi pesano megabyte e non sono sorgente
+/.impeccable/review/
+/.impeccable/mocks/
+/.impeccable/config.local.json

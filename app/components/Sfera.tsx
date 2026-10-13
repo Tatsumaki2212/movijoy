@@ -47,6 +47,8 @@ uniform vec2  risoluzione;
 uniform float tempo;
 uniform vec2  puntatore;   // -1..1, dove guarda Movijoy
 uniform float fermo;       // 1 = niente movimento (prefers-reduced-motion)
+uniform float parla;       // 1 = sta dicendo qualcosa: la bocca si muove, il piano si increspa
+uniform float sposta;      // dove sta la sfera in orizzontale (0 = al centro, >0 a destra)
 
 const vec3 ROSSO   = vec3(0.784, 0.063, 0.180);
 const vec3 BIANCO  = vec3(0.945, 0.949, 0.957);
@@ -180,13 +182,25 @@ void main() {
      stava 20 centesimi più in basso e si guardava Movijoy dal basso in
      su: finché c'era solo la bandiera non si notava, con una faccia
      sopra sì — gli occhi finivano a ridosso del profilo. */
-  vec3 occhio = vec3(0.0, 0.46, 2.95);
+  /* ⚠️ PIÙ LONTANA QUANDO LA SFERA STA A DESTRA. A 2.95 la sfera era
+     il protagonista di una colonna; sul primo schermo di movijoy.it
+     divide lo spazio con un titolo a scala enorme, e a quella distanza
+     gli entrava dentro. Con «sposta» attivo la macchina da presa
+     arretra e la sfera resta grande ma lascia respirare il testo. */
+  vec3 occhio = vec3(0.0, 0.46, 2.95 + 0.85 * step(0.01, sposta));
   vec3 raggio = normalize(vec3(uv, -1.75));
 
   float respiro = sin(t * 0.55) * 0.055;
   /* Alzata quel tanto che basta a lasciare sotto il riflesso: senza
      spazio sotto, la sfera non galleggia — sta appoggiata al bordo. */
-  vec3 centro = vec3(0.0, 0.46 + respiro, 0.0);
+  /* ⚠️ SPOSTATA A DESTRA SU UNO SCHERMO LARGO, e il perché sta nella
+     pagina e non qui: il primo schermo di movijoy.it ha il titolo a
+     sinistra e la sfera a destra sopra lo stesso piano — un oggetto
+     solo, non due colonne. Su un telefono la tela è stretta e la sfera
+     torna al centro: «sposta» arriva da fuori, misurato sulla tela.
+     (Niente accenti gravi in questi commenti: siamo dentro un template
+     literal di JavaScript, e un accento grave lo chiuderebbe.) */
+  vec3 centro = vec3(sposta, 0.46 + respiro, 0.0);
   float R = 1.0;
 
   /* ⚠️ NIENTE ROTAZIONE COSTANTE. Prima c'era un "t * 0.11" che faceva
@@ -212,13 +226,17 @@ void main() {
 
   /* Ogni tanto dice qualcosa: la bocca si muove sul ritmo delle
      sillabe, non a caso. */
-  float turno = step(0.74, fract(t * 0.082));
-  float apertura = turno * (0.35 + 0.35 * sin(t * 10.5) + 0.3 * sin(t * 6.3));
+  /* ⚠️ «parla» VINCE SUL TURNO: quando la pagina sta facendo dire a
+     Movijoy il perché di una correzione, la bocca si muove per tutta
+     la frase, non quando capita al caso del tempo. Con meno movimento
+     chiesto dal sistema la bocca resta chiusa e sorride. */
+  float turno = max(step(0.74, fract(t * 0.082)), parla);
+  float apertura = turno * (0.35 + 0.35 * sin(t * 10.5) + 0.3 * sin(t * 6.3)) * (1.0 - fermo);
 
   vec3 col = FONDO;
 
   // Un alone dietro, che stacca la sfera dal nero.
-  float alone = exp(-length(uv - vec2(0.0, 0.25)) * 1.9);
+  float alone = exp(-length(uv - vec2(sposta, 0.25)) * 1.9);
   col += vec3(0.10, 0.14, 0.24) * alone * 0.55;
 
   // ── La sfera ───────────────────────────────────────────────
@@ -248,8 +266,18 @@ void main() {
       float lontano = exp(-length(pp.xz) * 0.22);
       vec3 pav = FONDO + vec3(0.05, 0.07, 0.11) * lontano;
 
-      // Riflesso speculare della sfera nel piano.
-      vec3 rifl = reflect(raggio, vec3(0.0, 1.0, 0.0));
+      /* ⚠️ IL PIANO È UNA SUPERFICIE VIVA, NON UNO SFONDO: quando
+         Movijoy parla, onde concentriche partono da sotto la sfera e
+         inclinano la normale del pavimento, così il riflesso ondeggia
+         invece di stare fermo come uno specchio. Da fermo (o con meno
+         movimento) l'onda è zero e il piano torna liscio. */
+      float distanza = length(pp.xz - centro.xz);
+      float increspa = parla * (1.0 - fermo) * 0.07
+                     * sin(distanza * 9.0 - t * 5.5) * exp(-distanza * 0.8);
+      pav += vec3(0.35, 0.45, 0.70) * increspa * 0.35;
+
+      // Riflesso speculare della sfera nel piano, sulla normale increspata.
+      vec3 rifl = reflect(raggio, normalize(vec3(increspa * 0.9, 1.0, increspa * 0.9)));
       vec3 oc2 = pp - centro;
       float b2 = dot(oc2, rifl);
       float c2 = dot(oc2, oc2) - R * R;
@@ -294,9 +322,16 @@ function compila(gl: WebGLRenderingContext, tipo: number, sorgente: string) {
   return s;
 }
 
-export default function Sfera({ classe }: { classe?: string }) {
+export default function Sfera({ classe, parla = false }: { classe?: string; parla?: boolean }) {
   const tela = useRef<HTMLCanvasElement | null>(null);
   const [senzaWebgl, setSenzaWebgl] = useState(false);
+  /* ⚠️ UN RIFERIMENTO, NON UNA DIPENDENZA DELL'EFFETTO. L'effetto qui
+     sotto monta WebGL una volta e non deve rimontarlo a ogni parola:
+     `parla` cambia spesso, e il ciclo di disegno lo legge da qui. */
+  const parlaRef = useRef(parla);
+  useEffect(() => {
+    parlaRef.current = parla;
+  }, [parla]);
 
   useEffect(() => {
     const canvas = tela.current;
@@ -341,6 +376,8 @@ export default function Sfera({ classe }: { classe?: string }) {
     const uTempo = gl.getUniformLocation(prog, "tempo");
     const uPunt = gl.getUniformLocation(prog, "puntatore");
     const uFermo = gl.getUniformLocation(prog, "fermo");
+    const uParla = gl.getUniformLocation(prog, "parla");
+    const uSposta = gl.getUniformLocation(prog, "sposta");
 
     const menoMoto = window.matchMedia("(prefers-reduced-motion: reduce)");
     let fermo = menoMoto.matches;
@@ -453,6 +490,11 @@ export default function Sfera({ classe }: { classe?: string }) {
       gl.uniform1f(uTempo, (ora - partito) / 1000);
       gl.uniform2f(uPunt, dove.x, dove.y);
       gl.uniform1f(uFermo, fermo ? 1 : 0);
+      gl.uniform1f(uParla, parlaRef.current ? 1 : 0);
+      /* Su una tela larga la sfera sta a destra, per lasciare il titolo
+         a sinistra sullo stesso piano; su una tela stretta (telefono)
+         torna al centro. Misurato sulla tela, non sulla finestra. */
+      gl.uniform1f(uSposta, c.clientWidth / Math.max(c.clientHeight, 1) > 1.25 ? 0.62 : 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
     richiesta = requestAnimationFrame(disegna);
@@ -474,7 +516,7 @@ export default function Sfera({ classe }: { classe?: string }) {
   if (senzaWebgl) {
     return (
       <div className={classe} data-senza-webgl="">
-        <Faccia classe="mj-faccia" parla={false} bandiera="regno-unito" />
+        <Faccia classe="mj-faccia" parla={parla} bandiera="regno-unito" />
       </div>
     );
   }
