@@ -72,14 +72,23 @@ Variabili d'ambiente del progetto Vercel:
   verificato su Resend, altrimenti l'avviso non parte e la richiesta
   resta comunque nel database.
 
-## Il modulo della richiesta
+## Il percorso: vederlo, poi parlarci
 
-L'azione della pagina. Due vesti, un solo invio (`app/components/Richiesta.tsx`
-→ `app/api/richiesta/route.ts`): la targa nel primo schermo chiede la
-sola email; il modulo in fondo chiede nome, email, per chi è (piattaforma
-o privato) e due righe. Contro i robot: un campo nascosto e un tempo
-minimo dal caricamento. Il punto in cui aggiungere Turnstile, se un
-giorno serve, è segnato nella rotta.
+L'azione della casa è un tasto, «Vedi Movijoy all'opera»:
+
+1. `/all-opera` — due scene animate in HTML (`app/components/DemoOpera.tsx`):
+   la mail corretta riga per riga con il perché, e Movijoy sul sito di
+   un'azienda d'esempio che risponde con i criteri di quella.
+2. `/parla` — il dialogo (`app/components/Dialogo.tsx`): cinque domande
+   di profilazione a copione, scritte lettera per lettera mentre la sfera
+   muove la bocca; le risposte partono in una richiesta sola verso
+   `app/api/richiesta/route.ts`, cioè nella tabella `richieste_movijoy`.
+3. `/grazie` — Movijoy ringrazia per nome (nome ed email passano in
+   sessionStorage, mai nell'indirizzo).
+
+Contro i robot, nella rotta: un campo trappola e un tempo minimo dal
+caricamento. Il punto in cui aggiungere Turnstile, se un giorno serve,
+è segnato lì.
 
 ## La pagina principale, e come è nata
 
