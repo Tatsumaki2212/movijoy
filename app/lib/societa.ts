@@ -23,7 +23,7 @@ export const SOCIETA = {
      la partita IVA: non è un errore di copiatura. */
   partitaIva: "03106090990" as string | null,
   codiceFiscale: "03106090990" as string | null,
-  rea: null as string | null,
+  rea: "GE-533423" as string | null,
   costituita: "6 ottobre 2026",
 } as const;
 
@@ -43,6 +43,7 @@ export function rigaSocieta(): string {
     if (SOCIETA.partitaIva) pezzi.push(`P.IVA ${SOCIETA.partitaIva}`);
     if (SOCIETA.codiceFiscale) pezzi.push(`C.F. ${SOCIETA.codiceFiscale}`);
   }
-  if (SOCIETA.rea) pezzi.push(`REA ${SOCIETA.rea}`);
+  /* L'art. 2250 c.c. vuole anche l'ufficio del Registro: il numero è il C.F. qui sopra. */
+  if (SOCIETA.rea) pezzi.push(`Registro Imprese di ${SOCIETA.citta} · REA ${SOCIETA.rea}`);
   return pezzi.join(" · ");
 }
