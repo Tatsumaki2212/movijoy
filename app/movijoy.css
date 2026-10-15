@@ -1865,3 +1865,78 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
 .mj-io__avviso strong {
   color: var(--chiaro);
 }
+
+/* ── La chat dell'area privata: Movijoy in alto al centro, la
+   conversazione sotto, la casella in fondo su una riga ────────────── */
+.mj-io__chat {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: calc(100svh - 14rem);
+}
+
+.mj-io__sfera {
+  position: relative;
+  width: min(260px, 64vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  flex: none;
+}
+
+.mj-io__scambi {
+  display: grid;
+  gap: 1rem;
+  flex: 1;
+  align-content: start;
+}
+
+.mj-io__modulo {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "contesto testo invia";
+  gap: 0.6rem;
+  align-items: end;
+  margin: 0.5rem 0 0;
+  padding: 0.9rem 0 1.2rem;
+  background: linear-gradient(180deg, rgba(11, 19, 32, 0) 0%, #0b1320 24%);
+}
+
+.mj-io__contesto {
+  grid-area: contesto;
+  width: auto;
+  min-height: 3.1rem;
+}
+
+.mj-io__testo-campo {
+  grid-area: testo;
+  min-height: 3.1rem;
+  max-height: 14rem;
+  resize: none;
+  overflow: auto;
+}
+
+.mj-io__invia {
+  grid-area: invia;
+  min-height: 3.1rem;
+}
+
+.mj-nascosto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .mj-io__modulo {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "contesto contesto"
+      "testo invia";
+  }
+}

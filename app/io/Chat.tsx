@@ -6,10 +6,11 @@ import { tratto } from "../lib/memoria-chiavi";
 import type { Annotazione, Testo } from "../lib/clienti";
 
 /**
- * La chat con il motore: incolli un testo, Movijoy lo rende corretto
- * con le annotazioni. La stessa impostazione del dialogo della casa —
- * la sfera che muove la bocca mentre «dice» la correzione — ma qui
- * dall'altra parte c'è il motore vero.
+ * La chat con il motore: Movijoy in alto al centro, la conversazione
+ * sotto, la casella in fondo — una riga orizzontale che resta a portata
+ * di mano mentre si scorre. Incolli un testo, Movijoy lo rende corretto
+ * con le annotazioni; la sfera muove la bocca mentre «dice» la
+ * correzione, come nel dialogo della casa.
  *
  * La storia che arriva dal server (gli ultimi venti testi) resta in
  * vista: una chat che dimentica quello che hai mandato non è un
@@ -28,6 +29,7 @@ export default function Chat({ iniziali }: { iniziali: Testo[] }) {
   const [errore, setErrore] = useState("");
   const [vivo, setVivo] = useState<{ id: string; scritto: number } | null>(null);
   const fondo = useRef<HTMLDivElement | null>(null);
+  const campo = useRef<HTMLTextAreaElement | null>(null);
 
   const ultimo = scambi[scambi.length - 1];
   const parla = Boolean(vivo && ultimo && vivo.id === ultimo.id && vivo.scritto < ultimo.corretto.length);
@@ -54,6 +56,13 @@ export default function Chat({ iniziali }: { iniziali: Testo[] }) {
     fondo.current?.scrollIntoView({ block: "end" });
   }, [scambi.length, inCorso]);
 
+  /* La casella cresce con il testo, fino a un tetto: poi scorre dentro. */
+  function adatta(el: HTMLTextAreaElement | null) {
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 224)}px`;
+  }
+
   async function manda() {
     const t = testo.trim();
     if (!t || inCorso) return;
@@ -65,7 +74,7 @@ export default function Chat({ iniziali }: { iniziali: Testo[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ testo: t, contesto }),
       });
-      const corpo = (await r.json().catch(() => ({}))) as Partial<Scambio> & { errore?: string };
+      const corpo = (await r.json().catch(() => ({}))) as Partial<Scambio> & { errore?: string; tono?: string };
       if (!r.ok || !corpo.corretto) {
         setErrore(corpo.errore ?? "Non sono riuscito a correggere. Riprova fra un momento.");
         return;
@@ -75,12 +84,13 @@ export default function Chat({ iniziali }: { iniziali: Testo[] }) {
         originale: t,
         corretto: corpo.corretto,
         annotazioni: corpo.annotazioni ?? [],
-        tono_nota: corpo.tono_nota ?? ((corpo as { tono?: string }).tono || null),
+        tono_nota: corpo.tono_nota ?? (corpo.tono || null),
         non_so: corpo.non_so ?? [],
       };
       setScambi((s) => [...s, nuovo]);
       setVivo({ id: nuovo.id, scritto: 0 });
       setTesto("");
+      window.setTimeout(() => adatta(campo.current), 0);
     } catch {
       setErrore("La rete non ha risposto. Riprova.");
     } finally {
@@ -89,12 +99,12 @@ export default function Chat({ iniziali }: { iniziali: Testo[] }) {
   }
 
   return (
-    <div className="mj-dialogo mj-io__chat">
-      <div className="mj-dialogo__sfera">
+    <div className="mj-io__chat">
+      <div className="mj-io__sfera" aria-hidden="true">
         <Sfera classe="mj-tela mj-tela--dialogo" parla={parla || inCorso} />
       </div>
 
-      <div className="mj-dialogo__chat" aria-live="polite">
+      <div className="mj-io__scambi" aria-live="polite">
         {scambi.length === 0 && (
           <p className="mj-bolla mj-bolla--movijoy">
             Incolla qui sotto la prima email o il primo testo: te lo rendo corretto, con il perché di ogni cosa che
@@ -144,50 +154,52 @@ export default function Chat({ iniziali }: { iniziali: Testo[] }) {
         })}
 
         {inCorso && <p className="mj-modulo__nota">Movijoy sta leggendo…</p>}
-
-        <form
-          className="mj-dialogo__risposta mj-io__modulo"
-          onSubmit={(e) => {
-            e.preventDefault();
-            void manda();
-          }}
-        >
-          <div className="mj-io__contesto">
-            <label htmlFor="contesto" className="mj-modulo__etichetta">
-              Che cos&apos;è
-            </label>
-            <select id="contesto" className="mj-modulo__campo" value={contesto} onChange={(e) => setContesto(e.target.value)}>
-              <option value="email">Un&apos;email</option>
-              <option value="offerta">Un&apos;offerta o un preventivo</option>
-              <option value="documento">Un documento</option>
-              <option value="messaggio">Un messaggio breve</option>
-              <option value="altro">Altro</option>
-            </select>
-          </div>
-          <label className="mj-modulo__etichetta" htmlFor="testo">
-            Il testo
-          </label>
-          <textarea
-            id="testo"
-            className="mj-modulo__campo mj-modulo__campo--lungo"
-            rows={6}
-            maxLength={12000}
-            value={testo}
-            onChange={(e) => setTesto(e.target.value)}
-            onKeyDown={(e) => {
-              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") void manda();
-            }}
-            placeholder="Dear Mr Schmidt, I write you to inform that…"
-          />
-          <button type="submit" className="mj-tasto" disabled={inCorso || !testo.trim()}>
-            {inCorso ? "Un momento…" : "Correggi"}
-          </button>
-          <p className="mj-modulo__stato" role="status">
-            {errore}
-          </p>
-        </form>
+        <p className="mj-modulo__stato" role="status">
+          {errore}
+        </p>
         <div ref={fondo} />
       </div>
+
+      <form
+        className="mj-io__modulo"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void manda();
+        }}
+      >
+        <label className="mj-nascosto" htmlFor="contesto">
+          Che cos&apos;è
+        </label>
+        <select id="contesto" className="mj-modulo__campo mj-io__contesto" value={contesto} onChange={(e) => setContesto(e.target.value)}>
+          <option value="email">Un&apos;email</option>
+          <option value="offerta">Un&apos;offerta o un preventivo</option>
+          <option value="documento">Un documento</option>
+          <option value="messaggio">Un messaggio breve</option>
+          <option value="altro">Altro</option>
+        </select>
+        <label className="mj-nascosto" htmlFor="testo">
+          Il testo
+        </label>
+        <textarea
+          id="testo"
+          ref={campo}
+          className="mj-modulo__campo mj-modulo__campo--lungo mj-io__testo-campo"
+          rows={2}
+          maxLength={12000}
+          value={testo}
+          onChange={(e) => {
+            setTesto(e.target.value);
+            adatta(e.target);
+          }}
+          onKeyDown={(e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") void manda();
+          }}
+          placeholder="Incolla qui il testo. Ctrl+Invio per mandare."
+        />
+        <button type="submit" className="mj-tasto mj-io__invia" disabled={inCorso || !testo.trim()}>
+          {inCorso ? "Un momento…" : "Correggi"}
+        </button>
+      </form>
     </div>
   );
 }
