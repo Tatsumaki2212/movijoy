@@ -37,7 +37,6 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
             Se l&apos;hai attivato con un&apos;altra email, entra con quella. Altrimenti{" "}
             <Link href="/privato">attivalo qui</Link>.
           </p>
-          <Uscita />
         </section>
       </Cornice>
     );
@@ -70,7 +69,6 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
               </Link>
             )}
           </div>
-          <Uscita />
         </section>
       </Cornice>
     );
@@ -96,9 +94,6 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
             <form method="post" action="/api/portale">
               <button type="submit">Il conto</button>
             </form>
-            <form method="post" action="/api/esci">
-              <button type="submit">Esci</button>
-            </form>
           </nav>
         </div>
         {errore === "conto" && <p className="mj-modulo__stato">Il conto non si apre: scrivi a principale@chelivello.it.</p>}
@@ -114,15 +109,5 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
         <Chat iniziali={testi} />
       </section>
     </Cornice>
-  );
-}
-
-function Uscita() {
-  return (
-    <form method="post" action="/api/esci" className="mj-io__uscita">
-      <button type="submit" className="mj-tasto mj-tasto--vuoto">
-        Esci
-      </button>
-    </form>
   );
 }

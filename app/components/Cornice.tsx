@@ -26,9 +26,13 @@ export default function Cornice({ children, dentro = false }: { children: React.
             <span className="mj-etichetta">Risposte rapide senza credito</span>
           </div>
           {dentro ? (
-            <Link href="/io" className="mj-barra__accedi">
-              Il tuo Movijoy
-            </Link>
+            /* Esce con una POST: un'uscita raggiungibile con un semplice
+               indirizzo può essere fatta scattare da fuori. */
+            <form method="post" action="/api/esci" className="mj-barra__esci">
+              <button type="submit" className="mj-barra__accedi">
+                Esci
+              </button>
+            </form>
           ) : (
             <Link href="/entra" className="mj-barra__accedi">
               Accedi
