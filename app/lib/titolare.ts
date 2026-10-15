@@ -1,15 +1,8 @@
 /**
- * Chi incassa, finché non incassa la società.
- *
- * ⚠️ COPIA RIDOTTA di app/lib/titolare.ts di chelivello, con i soli
- * campi che questo sito stampa. La regola è la stessa di là: dal 7
- * ottobre 2026 la società ha la partita IVA, ma Stripe è ancora
- * intestato alla partita IVA individuale di Lorenzo in regime
- * forfettario, e le ricevute escono da lei. La legge chiede che su un
- * sito che vende sia scritto chi vende DAVVERO, non chi venderà —
- * quindi finché Stripe non passa alla società, in fondo alle pagine si
- * dice chi incassa. Il giorno del passaggio si toglie questa riga di
- * là e di qua, insieme.
+ * Il contatto del sito. Dal 16 ottobre 2026 vende e incassa la società
+ * (lib/societa.ts): la riga «incassi e ricevute: Lorenzo…» del
+ * passaggio è stata tolta dal piede quel giorno. Resta l'indirizzo di
+ * posta, che è lo stesso.
  */
 export const TITOLARE = {
   nome: "Lorenzo Antonio Moccia",

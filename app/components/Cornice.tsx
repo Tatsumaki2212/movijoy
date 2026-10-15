@@ -42,7 +42,7 @@ export default function Cornice({ children, dentro = false }: { children: React.
       <div className="mj-foglio">
         <footer className="mj-piede">
           <span className="mj-etichetta">
-            {rigaSocieta()} · incassi e ricevute: {TITOLARE.nome}, P. IVA {TITOLARE.partitaIva}
+            {rigaSocieta()}
           </span>
           <span className="mj-barra__dati">
             <a href={CHELIVELLO} className="mj-etichetta">
