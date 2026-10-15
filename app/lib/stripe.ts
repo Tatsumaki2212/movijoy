@@ -21,5 +21,13 @@ export function stripeConfigurato(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY && PREZZI.configurazione && PREZZI.mensile);
 }
 
-export const CONFIGURAZIONE_TESTO = "199,99 €";
-export const MENSILE_TESTO = "49,99 €";
+/* I prezzi su Stripe sono netti; l'IVA al 22% si aggiunge con l'aliquota
+   STRIPE_TAX_RATE_IVA nella sessione. A chi legge si mostra il totale. */
+export const CONFIGURAZIONE_NETTO = "199,99 €";
+export const MENSILE_NETTO = "49,99 €";
+export const CONFIGURAZIONE_TESTO = "243,99 €";
+export const MENSILE_TESTO = "60,99 €";
+export const ALIQUOTA_IVA = process.env.STRIPE_TAX_RATE_IVA ?? null;
+export function aliquote(): string[] | undefined {
+  return ALIQUOTA_IVA ? [ALIQUOTA_IVA] : undefined;
+}

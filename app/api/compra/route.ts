@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe, stripeConfigurato, PREZZI } from "@/app/lib/stripe";
+import { aliquote, stripe, stripeConfigurato, PREZZI } from "@/app/lib/stripe";
 import { SITO } from "@/app/lib/sito";
 import { emailValida } from "@/app/lib/verifica";
 
@@ -43,9 +43,11 @@ export async function POST(req: Request) {
   try {
     const sessione = await s.checkout.sessions.create({
       mode: "subscription",
+      /* L'IVA al 22% sopra i netti: sulla riga una tantum qui, sul
+         canone con default_tax_rates. Stripe la mostra in fattura. */
       line_items: [
         { price: PREZZI.mensile, quantity: 1 },
-        { price: PREZZI.configurazione, quantity: 1 },
+        { price: PREZZI.configurazione, quantity: 1, tax_rates: aliquote() },
       ],
       customer_email: email,
       locale: "it",
@@ -55,7 +57,7 @@ export async function POST(req: Request) {
       success_url: `${SITO}/attivato`,
       cancel_url: `${SITO}/privato`,
       metadata: { sito: "movijoy", linea: "privato", consenso_avvio_immediato: new Date().toISOString() },
-      subscription_data: { metadata: { sito: "movijoy", linea: "privato" } },
+      subscription_data: { metadata: { sito: "movijoy", linea: "privato" }, default_tax_rates: aliquote() },
     });
     if (!sessione.url) throw new Error("Stripe non ha dato un indirizzo");
     return NextResponse.redirect(sessione.url, 303);

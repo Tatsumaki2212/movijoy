@@ -1955,3 +1955,9 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
     padding-bottom: 11rem;
   }
 }
+
+.mj-privato__netto {
+  margin: -0.6rem 0 1rem;
+  font-size: 0.85rem;
+  color: var(--tenue);
+}
