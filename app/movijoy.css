@@ -1393,3 +1393,159 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
     transform: scaleY(-1);
   }
 }
+
+/* ── Il blog: gli articoli che arrivano da Holo (lib/holo.ts) ─────
+   Una colonna di lettura, non una pagina di vendita: misura di riga
+   da libro, titoli stretti come il resto del sito, il rosso solo
+   nelle sottolineature. */
+.mj-blog {
+  max-width: 76ch;
+  padding-top: 2.5rem;
+  padding-bottom: 5rem;
+}
+
+.mj-blog__data {
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tenue);
+  margin: 0 0 1rem;
+}
+
+.mj-blog__data a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mj-blog__data a:hover {
+  color: var(--chiaro);
+}
+
+.mj-blog__titolo {
+  font-size: clamp(2rem, 4.5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0 0 1.2rem;
+  text-wrap: balance;
+}
+
+.mj-blog__estratto {
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--tenue);
+  margin: 0 0 2rem;
+}
+
+.mj-blog__copertina {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0 0 2rem;
+}
+
+.mj-prosa {
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.mj-prosa h2 {
+  font-size: 1.6rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 2.2rem 0 0.8rem;
+}
+
+.mj-prosa h3 {
+  font-size: 1.25rem;
+  margin: 1.8rem 0 0.6rem;
+}
+
+.mj-prosa p,
+.mj-prosa ul,
+.mj-prosa ol,
+.mj-prosa blockquote,
+.mj-prosa table,
+.mj-prosa pre,
+.mj-prosa figure {
+  margin: 0 0 1.1rem;
+}
+
+.mj-prosa a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--rosso);
+  text-underline-offset: 3px;
+}
+
+.mj-prosa img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.mj-prosa blockquote {
+  border-left: 3px solid var(--rosso);
+  padding-left: 1rem;
+  color: var(--tenue);
+}
+
+.mj-prosa table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.mj-prosa th,
+.mj-prosa td {
+  border-top: 1px solid rgba(233, 239, 247, 0.18);
+  padding: 0.5rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.mj-prosa code,
+.mj-prosa pre {
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.95em;
+}
+
+.mj-blog__altri {
+  margin-top: 3rem;
+}
+
+.mj-blog__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mj-blog__lista li {
+  padding: 1.2rem 0;
+  border-top: 1px solid rgba(233, 239, 247, 0.14);
+}
+
+.mj-blog__lista a {
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mj-blog__lista a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--rosso);
+}
+
+.mj-blog__lista p {
+  margin: 0.4rem 0 0;
+  color: var(--tenue);
+}
+
+.mj-blog__coda {
+  margin-top: 3rem;
+}
