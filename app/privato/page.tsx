@@ -23,7 +23,8 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITO}/privato` },
 };
 
-export default function Privato() {
+export default async function Privato({ searchParams }: { searchParams: Promise<{ errore?: string }> }) {
+  const { errore } = await searchParams;
   return (
     <Cornice>
       <section className="mj-foglio mj-sezione mj-privato">
@@ -59,6 +60,11 @@ export default function Privato() {
           </div>
         </div>
 
+        {errore === "email" && (
+          <p className="mj-modulo__stato">Quell&apos;indirizzo email non sembra esistere: controlla come l&apos;hai scritto, o lascia vuoto.</p>
+        )}
+        {errore === "consenso" && <p className="mj-modulo__stato">Per attivare serve la spunta sull&apos;avvio immediato della configurazione.</p>}
+        {errore === "cassa" && <p className="mj-modulo__stato">La cassa non ha risposto. Riprova, o scrivi a principale@chelivello.it.</p>}
         <form className="mj-modulo mj-privato__modulo" method="post" action="/api/compra">
           <label className="mj-modulo__etichetta" htmlFor="email">
             La tua email di lavoro (facoltativa: la cassa la chiede comunque)

@@ -32,7 +32,7 @@ export default async function Entra({ searchParams }: { searchParams: Promise<{ 
           <p className="mj-blog__estratto">Scrivi l&apos;email con cui hai attivato Movijoy: ti mando il link per entrare.</p>
         )}
         {errore === "scaduto" && <p className="mj-modulo__stato">Quel link era già usato o scaduto: te ne mando uno nuovo.</p>}
-        {errore === "email" && <p className="mj-modulo__stato">Serve un indirizzo email.</p>}
+        {errore === "email" && <p className="mj-modulo__stato">Quell&apos;indirizzo non sembra esistere: controlla come l&apos;hai scritto.</p>}
         {errore === "link" && <p className="mj-modulo__stato">L&apos;ingresso non è configurato: scrivi a principale@chelivello.it.</p>}
         <form className="mj-modulo mj-privato__modulo" method="post" action="/api/entra">
           <label className="mj-modulo__etichetta" htmlFor="email">

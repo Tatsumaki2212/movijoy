@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe, stripeConfigurato, PREZZI } from "@/app/lib/stripe";
 import { SITO } from "@/app/lib/sito";
+import { emailValida } from "@/app/lib/verifica";
 
 /**
  * «Attiva il tuo Movijoy»: il modulo di /privato manda qui, e da qui si
@@ -29,7 +30,10 @@ export async function POST(req: Request) {
   try {
     const modulo = await req.formData();
     const e = String(modulo.get("email") ?? "").trim().toLowerCase();
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)) email = e;
+    if (e) {
+      if (!(await emailValida(e))) return NextResponse.redirect(`${SITO}/privato?errore=email`, 303);
+      email = e;
+    }
     consenso = modulo.get("consenso") === "si";
   } catch {
     /* senza modulo: Stripe chiede l'email da sé */

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { emailValida as emailEsiste } from "@/app/lib/verifica";
 
 /**
  * La richiesta: chi vuole Movijoy scrive, e noi rispondiamo.
@@ -83,6 +84,9 @@ export async function POST(req: Request) {
 
   if (!emailValida(email)) {
     return NextResponse.json({ errore: "Serve un indirizzo email a cui rispondere." }, { status: 400 });
+  }
+  if (!(await emailEsiste(email))) {
+    return NextResponse.json({ errore: "Quell'indirizzo non sembra esistere: controlla come l'hai scritto." }, { status: 400 });
   }
   /* ⚠️ IL NOME NON È OBBLIGATORIO, e il motivo è la targa nel primo
      schermo: chiede la sola email, perché chi ha fretta lascia quella

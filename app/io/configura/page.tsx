@@ -41,6 +41,9 @@ export default async function Configura({ searchParams }: { searchParams: Promis
             : "Cambia quello che vuoi: dalla prossima correzione Movijoy usa la scheda nuova."}
         </p>
         {errore === "salvataggio" && <p className="mj-modulo__stato">Non sono riuscito a salvare. Riprova.</p>}
+        {errore === "telefono" && (
+          <p className="mj-modulo__stato">Quel numero di telefono non sembra un numero: scrivilo con il prefisso, per esempio +39 333 1234567.</p>
+        )}
         {errore === "termini" && (
           <p className="mj-modulo__stato">Per salvare la scheda serve l&apos;accettazione dei termini e della privacy, qui in fondo.</p>
         )}

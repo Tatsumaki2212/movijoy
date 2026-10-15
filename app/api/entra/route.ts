@@ -3,6 +3,7 @@ import { clientePerEmail } from "@/app/lib/clienti";
 import { linkIngresso } from "@/app/lib/accesso";
 import { letteraIngresso, manda } from "@/app/lib/posta";
 import { SITO } from "@/app/lib/sito";
+import { emailValida } from "@/app/lib/verifica";
 
 /**
  * «Mandami il link»: il modulo di /entra.
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
     const modulo = await req.formData();
     email = String(modulo.get("email") ?? "").trim().toLowerCase();
   } catch {}
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+  if (!(await emailValida(email))) {
     return NextResponse.redirect(`${SITO}/entra?errore=email`, 303);
   }
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { utenteCorrente } from "@/app/lib/db";
 import { clientePerUtente, salvaContatto, salvaScheda } from "@/app/lib/clienti";
 import { SITO } from "@/app/lib/sito";
+import { telefonoNormale } from "@/app/lib/verifica";
 
 /**
  * Le cinque domande della configurazione (/io/configura) finiscono qui
@@ -27,7 +28,11 @@ export async function POST(req: Request) {
 
   /* Il telefono e i termini: chiesti a chi attiva un Movijoy per sé.
      Senza l'accettazione non si salva niente, e la pagina lo dice. */
-  const telefono = (pulisci(m.get("telefono"), 40) ?? "").replace(/[^\d+()\-\s.]/g, "").trim() || null;
+  const telefonoGrezzo = pulisci(m.get("telefono"), 40);
+  const telefono = telefonoGrezzo ? telefonoNormale(telefonoGrezzo) : null;
+  if (telefonoGrezzo && !telefono) {
+    return NextResponse.redirect(`${SITO}/io/configura?errore=telefono`, 303);
+  }
   const accetta = m.get("termini") === "si";
   if (!cliente.termini_accettati_il && !accetta) {
     return NextResponse.redirect(`${SITO}/io/configura?errore=termini`, 303);
