@@ -228,14 +228,19 @@ export default function Casa() {
                 non sa fare. Riservato: non si mescola con quello di nessun
                 altro.
               </p>
-              <a className="mj-porte__vai" href="/all-opera">
-                Vedilo al lavoro per te
-              </a>
+              <Link className="mj-porte__vai" href="/privato">
+                Attiva il tuo Movijoy
+              </Link>
             </div>
           </div>
-          {/* ⚠️ OFFERTA — qui, sotto le due porte, andranno prezzo e modo di
-              acquisto quando l'offerta esiste. Fino ad allora l'azione è la
-              richiesta, e basta. */}
+          {/* L'offerta del privato, decisa il 13 ottobre 2026 e in cassa
+              dal 15: si compra da soli su /privato. Per le piattaforme
+              resta la richiesta: l'offerta è ancora da definire. */}
+          <p className="mj-porte__offerta">
+            <strong>Il tuo assistente privato</strong> si attiva da solo: 199,99 € di configurazione, poi
+            49,99 € al mese, senza vincolo. <Link href="/privato">Attivalo</Link> ·{" "}
+            <Link href="/entra">Hai già un Movijoy? Entra</Link>
+          </p>
         </section>
 
         {/* ── La prova: errori veri, con la correzione ──────────── */}

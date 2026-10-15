@@ -108,3 +108,17 @@ di Impeccable: «Il piano riflettente». Il contratto di direzione sta in
 
 Controlli prima di un deploy: `npx tsc --noEmit`, `npm run lint`,
 `npm run build`.
+
+## Movijoy privato (dal 15 ottobre 2026)
+
+Il privato compra da solo: `/privato` → `POST /api/compra` (Stripe Checkout: configurazione una tantum +
+manutenzione mensile) → `/attivato`. Il webhook `POST /api/stripe` crea il cliente (tabelle `mj_*`,
+SQL 49 nel repository di chelivello) e manda la lettera di benvenuto con il link d'ingresso
+(`/auth/conferma?gettone=…`, verificato lato server). `/entra` rimanda il link. `/io` è l'area privata:
+le cinque domande (`/io/configura` → `POST /api/configura`) diventano la scheda dei criteri; la chat
+manda a `POST /api/motore`, che corregge con la scheda e la memoria del cliente (`lib/motore.ts`) e
+aggiorna i tratti. `POST /api/portale` apre il portale di Stripe; `POST /api/esci` esce.
+
+Variabili in più: `SUPABASE_ANON_KEY` (per la sessione), `ANTHROPIC_API_KEY`, `STRIPE_SECRET_KEY`,
+`STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MJ_CONFIGURAZIONE`, `STRIPE_PRICE_MJ_MENSILE`, `MITTENTE_EMAIL`
+(un mittente verificato su Resend), `RESEND_API_KEY`.

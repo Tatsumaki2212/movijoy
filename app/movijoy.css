@@ -1549,3 +1549,273 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
 .mj-blog__coda {
   margin-top: 3rem;
 }
+
+/* ── Movijoy privato: l'offerta, l'ingresso, l'area privata ───────
+   Stessa colonna di lettura del blog (.mj-blog__*) per titoli e
+   cappelli; qui le due colonne dei prezzi, il modulo della cassa, la
+   barra dell'area privata e le annotazioni della correzione. */
+.mj-privato,
+.mj-io {
+  max-width: 76ch;
+  padding-top: 2.5rem;
+  padding-bottom: 5rem;
+}
+
+.mj-privato__prezzi {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin: 2.5rem 0;
+}
+
+.mj-privato__prezzo {
+  border: 1px solid rgba(233, 239, 247, 0.16);
+  border-radius: 6px;
+  padding: 1.4rem 1.5rem;
+}
+
+.mj-privato__cifra {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0.2rem 0 1rem;
+}
+
+.mj-privato__cifra span {
+  font-size: 0.45em;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--tenue);
+}
+
+.mj-privato__lista {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--tenue);
+  line-height: 1.5;
+}
+
+.mj-privato__lista li + li {
+  margin-top: 0.5rem;
+}
+
+.mj-privato__modulo {
+  margin-top: 1.5rem;
+}
+
+.mj-privato__consenso {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  margin: 1rem 0 1.2rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--tenue);
+}
+
+.mj-privato__consenso input {
+  margin-top: 0.3rem;
+  flex: none;
+  accent-color: var(--rosso);
+}
+
+.mj-privato__dubbi .mj-sezione__titolo {
+  margin-top: 2rem;
+}
+
+.mj-porte__offerta {
+  margin: 2rem 0 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(233, 239, 247, 0.14);
+  color: var(--tenue);
+  line-height: 1.5;
+}
+
+.mj-porte__offerta strong {
+  color: var(--chiaro);
+}
+
+.mj-porte__offerta a {
+  color: var(--chiaro);
+  text-decoration: underline;
+  text-decoration-color: var(--rosso);
+  text-underline-offset: 3px;
+}
+
+.mj-io__barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.mj-io__voci {
+  display: flex;
+  gap: 1.4rem;
+  align-items: baseline;
+}
+
+.mj-io__voci a,
+.mj-io__voci button {
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tenue);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.mj-io__voci a:hover,
+.mj-io__voci button:hover {
+  color: var(--chiaro);
+}
+
+.mj-io__azioni {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+.mj-io__uscita {
+  margin-top: 2rem;
+}
+
+.mj-io__chat .mj-dialogo__chat {
+  max-width: none;
+}
+
+.mj-io__originale {
+  white-space: pre-wrap;
+}
+
+.mj-io__corretto {
+  display: block;
+}
+
+.mj-io__testo {
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.mj-io__copia {
+  display: inline-block;
+  margin: 0.8rem 0 0;
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tenue);
+  background: none;
+  border: 1px solid rgba(233, 239, 247, 0.24);
+  border-radius: 3px;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+.mj-io__copia:hover {
+  color: var(--chiaro);
+  border-color: var(--chiaro);
+}
+
+.mj-correzione {
+  margin: 1.2rem 0 0;
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.8rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.mj-correzione li {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.mj-correzione__prima {
+  text-decoration: line-through;
+  text-decoration-color: var(--rosso);
+  color: var(--tenue);
+}
+
+.mj-correzione__dopo {
+  font-weight: 700;
+}
+
+.mj-correzione__perche {
+  color: var(--tenue);
+}
+
+.mj-correzione__perche em {
+  font-style: normal;
+  color: var(--chiaro);
+  opacity: 0.8;
+}
+
+.mj-io__nota,
+.mj-io__tono {
+  margin: 1rem 0 0;
+  color: var(--tenue);
+  font-size: 0.95rem;
+}
+
+.mj-io__tono {
+  border-left: 3px solid var(--rosso);
+  padding-left: 0.8rem;
+}
+
+.mj-io__nonso {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--tenue);
+}
+
+.mj-io__nonso p {
+  margin: 0 0 0.4rem;
+}
+
+.mj-io__nonso ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.mj-io__modulo {
+  margin-top: 2rem;
+}
+
+.mj-io__contesto {
+  margin-bottom: 0.8rem;
+}
+
+.mj-io__contesto select {
+  max-width: 24rem;
+}
+
+.mj-scelte--radio {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mj-scelte--radio label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mj-scelte--radio input {
+  accent-color: var(--rosso);
+}
+
+.mj-io__scheda .mj-modulo__etichetta {
+  margin-top: 1.2rem;
+}
