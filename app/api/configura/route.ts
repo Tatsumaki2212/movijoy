@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { utenteCorrente } from "@/app/lib/db";
-import { clientePerUtente, salvaScheda } from "@/app/lib/clienti";
+import { clientePerUtente, salvaContatto, salvaScheda } from "@/app/lib/clienti";
 import { SITO } from "@/app/lib/sito";
 
 /**
@@ -24,6 +24,15 @@ export async function POST(req: Request) {
   if (!cliente) return NextResponse.redirect(`${SITO}/io`, 303);
 
   const m = await req.formData();
+
+  /* Il telefono e i termini: chiesti a chi attiva un Movijoy per sé.
+     Senza l'accettazione non si salva niente, e la pagina lo dice. */
+  const telefono = (pulisci(m.get("telefono"), 40) ?? "").replace(/[^\d+()\-\s.]/g, "").trim() || null;
+  const accetta = m.get("termini") === "si";
+  if (!cliente.termini_accettati_il && !accetta) {
+    return NextResponse.redirect(`${SITO}/io/configura?errore=termini`, 303);
+  }
+
   const varietaGrezza = pulisci(m.get("varieta"), 20);
   const varieta = varietaGrezza === "american" ? "american" : "british";
   const nonToccare = (pulisci(m.get("non_toccare"), MAX.non_toccare) ?? "")
@@ -44,5 +53,6 @@ export async function POST(req: Request) {
     sito_web: sito,
     note: pulisci(m.get("note"), MAX.note),
   });
+  if (ok) await salvaContatto(cliente.id, { telefono, accettaTermini: accetta && !cliente.termini_accettati_il });
   return NextResponse.redirect(`${SITO}/io${ok ? "" : "/configura?errore=salvataggio"}`, 303);
 }

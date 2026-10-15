@@ -190,6 +190,9 @@ export default function Casa() {
                 misura vera del motore. */}
             <span className="mj-etichetta">Risposte rapide senza credito</span>
           </div>
+          <Link href="/entra" className="mj-barra__accedi">
+            Accedi
+          </Link>
         </header>
       </div>
 

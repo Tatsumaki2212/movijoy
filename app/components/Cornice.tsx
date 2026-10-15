@@ -25,6 +25,9 @@ export default function Cornice({ children }: { children: React.ReactNode }) {
             <span className="mj-etichetta">Criteri Cambridge · IELTS</span>
             <span className="mj-etichetta">Risposte rapide senza credito</span>
           </div>
+          <Link href="/entra" className="mj-barra__accedi">
+            Accedi
+          </Link>
         </header>
       </div>
 

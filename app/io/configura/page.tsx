@@ -5,6 +5,7 @@ import "../../movijoy.css";
 import Cornice from "../../components/Cornice";
 import { utenteCorrente } from "../../lib/db";
 import { clientePerUtente, schedaDi } from "../../lib/clienti";
+import { CHELIVELLO, NOME_CHELIVELLO } from "../../lib/sito";
 
 /**
  * La configurazione: le cinque domande che diventano la scheda dei
@@ -40,6 +41,9 @@ export default async function Configura({ searchParams }: { searchParams: Promis
             : "Cambia quello che vuoi: dalla prossima correzione Movijoy usa la scheda nuova."}
         </p>
         {errore === "salvataggio" && <p className="mj-modulo__stato">Non sono riuscito a salvare. Riprova.</p>}
+        {errore === "termini" && (
+          <p className="mj-modulo__stato">Per salvare la scheda serve l&apos;accettazione dei termini e della privacy, qui in fondo.</p>
+        )}
 
         <form className="mj-modulo mj-io__scheda" method="post" action="/api/configura">
           <label className="mj-modulo__etichetta" htmlFor="lavoro">
@@ -81,6 +85,33 @@ export default async function Configura({ searchParams }: { searchParams: Promis
             Altro che Movijoy deve sapere (facoltativo)
           </label>
           <textarea id="note" name="note" className="mj-modulo__campo mj-modulo__campo--lungo" rows={3} maxLength={1500} defaultValue={s?.note ?? ""} />
+
+          <label className="mj-modulo__etichetta" htmlFor="telefono">
+            Il tuo numero di telefono, per la chiamata di configurazione compresa (facoltativo)
+          </label>
+          <input id="telefono" name="telefono" type="tel" autoComplete="tel" className="mj-modulo__campo" maxLength={40} defaultValue={cliente.telefono ?? ""} placeholder="+39 …" />
+
+          {cliente.termini_accettati_il ? (
+            <p className="mj-modulo__nota">
+              Termini di servizio e privacy di {NOME_CHELIVELLO} accettati il{" "}
+              {new Date(cliente.termini_accettati_il).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}.
+            </p>
+          ) : (
+            <label className="mj-privato__consenso">
+              <input type="checkbox" name="termini" value="si" required />
+              <span>
+                Accetto i{" "}
+                <a href={`${CHELIVELLO}/termini`} target="_blank" rel="noopener">
+                  termini di servizio
+                </a>{" "}
+                e l&apos;
+                <a href={`${CHELIVELLO}/privacy`} target="_blank" rel="noopener">
+                  informativa sulla privacy
+                </a>{" "}
+                di {NOME_CHELIVELLO}, la società dietro Movijoy.
+              </span>
+            </label>
+          )}
 
           <button type="submit" className="mj-tasto">
             {prima ? "Salva e comincia" : "Salva la scheda"}

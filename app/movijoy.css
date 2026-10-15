@@ -1819,3 +1819,28 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
 .mj-io__scheda .mj-modulo__etichetta {
   margin-top: 1.2rem;
 }
+
+/* ── Accedi, in alto a destra ──────────────────────────────────── */
+.mj-barra {
+  justify-content: flex-start;
+}
+
+.mj-barra__accedi {
+  margin-left: auto;
+  font-family: var(--f-colonna-stack, "Archivo Narrow", "Archivo", sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--chiaro);
+  text-decoration: none;
+  border: 1px solid rgba(233, 239, 247, 0.3);
+  border-radius: 3px;
+  padding: 0.45rem 0.8rem;
+  white-space: nowrap;
+}
+
+.mj-barra__accedi:hover,
+.mj-barra__accedi:focus-visible {
+  border-color: var(--rosso);
+}

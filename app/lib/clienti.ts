@@ -15,6 +15,8 @@ export interface Cliente {
   utente: string | null;
   email: string;
   nome: string | null;
+  telefono: string | null;
+  termini_accettati_il: string | null;
   stripe_cliente: string | null;
   stripe_abbonamento: string | null;
   stato: StatoCliente;
@@ -62,7 +64,7 @@ export interface Tratto {
 }
 
 const COLONNE_CLIENTE =
-  "id, utente, email, nome, stripe_cliente, stripe_abbonamento, stato, piano, configurato_il, creato_il";
+  "id, utente, email, nome, telefono, termini_accettati_il, stripe_cliente, stripe_abbonamento, stato, piano, configurato_il, creato_il";
 
 export async function clientePerUtente(utente: string): Promise<Cliente | null> {
   const sb = servizio();
@@ -159,6 +161,23 @@ export async function cambiaStato(id: string, stato: StatoCliente): Promise<void
     .update({ stato, aggiornato_il: new Date().toISOString() })
     .eq("id", id);
   if (error) console.error("clienti: stato —", error.message);
+}
+
+/**
+ * Il telefono (per la chiamata di configurazione) e, una volta sola,
+ * l'accettazione dei termini e della privacy di Che Livello!, con data
+ * e ora. L'accettazione non si toglie da qui: è un fatto, non un campo.
+ */
+export async function salvaContatto(
+  id: string,
+  dati: { telefono: string | null; accettaTermini: boolean },
+): Promise<void> {
+  const sb = servizio();
+  if (!sb) return;
+  const riga: Record<string, unknown> = { telefono: dati.telefono, aggiornato_il: new Date().toISOString() };
+  if (dati.accettaTermini) riga.termini_accettati_il = new Date().toISOString();
+  const { error } = await sb.from("mj_clienti").update(riga).eq("id", id);
+  if (error) console.error("clienti: contatto —", error.message);
 }
 
 /* ── La scheda ─────────────────────────────────────────────────── */

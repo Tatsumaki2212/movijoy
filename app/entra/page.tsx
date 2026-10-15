@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "../movijoy.css";
+import { redirect } from "next/navigation";
 import Cornice from "../components/Cornice";
+import { utenteCorrente } from "../lib/db";
 
 /**
  * «Entra»: l'email, e arriva il link. Nessuna password da ricordare.
@@ -15,6 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Entra({ searchParams }: { searchParams: Promise<{ mandato?: string; errore?: string }> }) {
+  if (await utenteCorrente()) redirect("/io");
   const { mandato, errore } = await searchParams;
   return (
     <Cornice>

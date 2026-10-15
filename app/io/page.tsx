@@ -77,7 +77,7 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
   }
 
   const scheda = await schedaDi(cliente.id);
-  if (!scheda) redirect("/io/configura");
+  if (!scheda || !cliente.termini_accettati_il) redirect("/io/configura");
 
   const testi = await ultimiTesti(cliente.id, 20);
 
