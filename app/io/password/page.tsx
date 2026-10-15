@@ -31,7 +31,7 @@ export default async function Password({ searchParams }: { searchParams: Promise
   const obbligatoria = Boolean(cliente?.password_da_cambiare);
 
   return (
-    <Cornice>
+    <Cornice dentro>
       <section className="mj-foglio mj-sezione mj-io">
         <p className="mj-blog__data">{utente.email}</p>
         <h1 className="mj-blog__titolo">{obbligatoria ? "Scegli la tua password." : "Cambia la password."}</h1>

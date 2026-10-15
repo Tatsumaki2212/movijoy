@@ -29,7 +29,7 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
 
   if (!cliente) {
     return (
-      <Cornice>
+      <Cornice dentro>
         <section className="mj-foglio mj-sezione mj-io">
           <p className="mj-blog__data">{utente.email}</p>
           <h1 className="mj-blog__titolo">Questo indirizzo non ha ancora un Movijoy.</h1>
@@ -45,7 +45,7 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
 
   if (cliente.stato !== "attivo") {
     return (
-      <Cornice>
+      <Cornice dentro>
         <section className="mj-foglio mj-sezione mj-io">
           <p className="mj-blog__data">{cliente.email}</p>
           <h1 className="mj-blog__titolo">
@@ -83,7 +83,7 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
   const testi = await ultimiTesti(cliente.id, 20);
 
   return (
-    <Cornice>
+    <Cornice dentro>
       <section className="mj-foglio mj-sezione mj-io">
         <div className="mj-io__barra">
           <p className="mj-blog__data">

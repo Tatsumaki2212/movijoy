@@ -37,7 +37,7 @@ export default async function Configura({ searchParams }: { searchParams: Promis
   const organizzazione = cliente.tipo === "organizzazione";
 
   return (
-    <Cornice>
+    <Cornice dentro>
       <section className="mj-foglio mj-sezione mj-io">
         <p className="mj-blog__data">{organizzazione ? "La scheda dell'organizzazione" : prima ? "Cinque domande" : "La tua scheda"}</p>
         <h1 className="mj-blog__titolo">

@@ -9,7 +9,7 @@ import { TITOLARE } from "../lib/titolare";
  * parla, grazie) non divergono. Che Livello! compare solo nel piede,
  * come società: decisione di Lorenzo del 13 ottobre 2026.
  */
-export default function Cornice({ children }: { children: React.ReactNode }) {
+export default function Cornice({ children, dentro = false }: { children: React.ReactNode; dentro?: boolean }) {
   return (
     <div className="mj">
       <a href="#contenuto" className="salta">
@@ -25,9 +25,15 @@ export default function Cornice({ children }: { children: React.ReactNode }) {
             <span className="mj-etichetta">Criteri Cambridge · IELTS</span>
             <span className="mj-etichetta">Risposte rapide senza credito</span>
           </div>
-          <Link href="/entra" className="mj-barra__accedi">
-            Accedi
-          </Link>
+          {dentro ? (
+            <Link href="/io" className="mj-barra__accedi">
+              Il tuo Movijoy
+            </Link>
+          ) : (
+            <Link href="/entra" className="mj-barra__accedi">
+              Accedi
+            </Link>
+          )}
         </header>
       </div>
 

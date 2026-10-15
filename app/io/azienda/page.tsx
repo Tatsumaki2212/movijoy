@@ -33,7 +33,7 @@ export default async function Azienda() {
   const s = await schedaDi(cliente.id);
 
   return (
-    <Cornice>
+    <Cornice dentro>
       <section className="mj-foglio mj-sezione mj-io">
         <p className="mj-blog__data">Account aziendale</p>
         <h1 className="mj-blog__titolo">Movijoy per la tua organizzazione.</h1>

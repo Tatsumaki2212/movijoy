@@ -1890,18 +1890,29 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
   align-content: start;
 }
 
+/* ⚠️ FIXED, NON STICKY: .mj ha overflow-x: hidden, e un antenato con
+   overflow diverso da visible spegne position: sticky. La casella sta
+   quindi fissa in fondo allo schermo, larga quanto la colonna di
+   lettura, e la chat lascia spazio sotto perché l'ultimo scambio non
+   finisca coperto. */
 .mj-io__modulo {
-  position: sticky;
+  position: fixed;
   bottom: 0;
-  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(76ch, calc(100vw - 2 * clamp(1.25rem, 4vw, 3.5rem)));
+  z-index: 4;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas: "contesto testo invia";
   gap: 0.6rem;
   align-items: end;
-  margin: 0.5rem 0 0;
-  padding: 0.9rem 0 1.2rem;
-  background: linear-gradient(180deg, rgba(11, 19, 32, 0) 0%, #0b1320 24%);
+  padding: 0.9rem 0 1.1rem;
+  background: linear-gradient(180deg, rgba(11, 19, 32, 0) 0%, #0b1320 22%);
+}
+
+.mj-io__chat {
+  padding-bottom: 8rem;
 }
 
 .mj-io__contesto {
@@ -1938,5 +1949,9 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
     grid-template-areas:
       "contesto contesto"
       "testo invia";
+  }
+
+  .mj-io__chat {
+    padding-bottom: 11rem;
   }
 }
