@@ -22,11 +22,11 @@ export function stripeConfigurato(): boolean {
 }
 
 /* I prezzi su Stripe sono netti; l'IVA al 22% si aggiunge con l'aliquota
-   STRIPE_TAX_RATE_IVA nella sessione. A chi legge si mostra il totale. */
-export const CONFIGURAZIONE_NETTO = "199,99 €";
-export const MENSILE_NETTO = "49,99 €";
-export const CONFIGURAZIONE_TESTO = "243,99 €";
-export const MENSILE_TESTO = "60,99 €";
+   STRIPE_TAX_RATE_IVA nella sessione. In pagina si mostra il netto con
+   «+ IVA 22%» accanto; il totale lo si vede alla cassa. */
+export const CONFIGURAZIONE_TESTO = "199,99 €";
+export const MENSILE_TESTO = "49,99 €";
+export const PIU_IVA = "+ IVA 22%";
 export const ALIQUOTA_IVA = process.env.STRIPE_TAX_RATE_IVA ?? null;
 export function aliquote(): string[] | undefined {
   return ALIQUOTA_IVA ? [ALIQUOTA_IVA] : undefined;

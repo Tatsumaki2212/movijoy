@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "../movijoy.css";
 import Cornice from "../components/Cornice";
-import { CONFIGURAZIONE_NETTO, CONFIGURAZIONE_TESTO, MENSILE_NETTO, MENSILE_TESTO } from "../lib/stripe";
+import { CONFIGURAZIONE_TESTO, MENSILE_TESTO, PIU_IVA } from "../lib/stripe";
 import { SITO } from "../lib/sito";
 
 /**
@@ -19,7 +19,7 @@ import { SITO } from "../lib/sito";
 export const metadata: Metadata = {
   title: "Il tuo assistente privato",
   description:
-    "Movijoy privato: l'inglese che scrivi per lavoro, corretto nel tuo registro, con la tua scheda dei criteri. 243,99 € di configurazione, 60,99 € al mese IVA inclusa, senza vincolo.",
+    "Movijoy privato: l'inglese che scrivi per lavoro, corretto nel tuo registro, con la tua scheda dei criteri. 199,99 € di configurazione e 49,99 € al mese, più IVA, senza vincolo.",
   alternates: { canonical: `${SITO}/privato` },
 };
 
@@ -40,7 +40,7 @@ export default async function Privato({ searchParams }: { searchParams: Promise<
           <div className="mj-privato__prezzo">
             <p className="mj-blog__data">Configurazione, una volta</p>
             <p className="mj-privato__cifra">{CONFIGURAZIONE_TESTO}</p>
-            <p className="mj-privato__netto">{CONFIGURAZIONE_NETTO} + IVA 22%</p>
+            <p className="mj-privato__netto">{PIU_IVA} · il totale lo vedi alla cassa</p>
             <ul className="mj-privato__lista">
               <li>Cinque domande per dirgli come scrivi: lavoro, varietà, tono, a chi scrivi, le parole da non toccare mai.</li>
               <li>La tua scheda dei criteri: la vedi, la correggi, è tua.</li>
@@ -52,7 +52,7 @@ export default async function Privato({ searchParams }: { searchParams: Promise<
             <p className="mj-privato__cifra">
               {MENSILE_TESTO}<span>/mese</span>
             </p>
-            <p className="mj-privato__netto">{MENSILE_NETTO} + IVA 22%</p>
+            <p className="mj-privato__netto">{PIU_IVA} · il totale lo vedi alla cassa</p>
             <ul className="mj-privato__lista">
               <li>Correzioni in venti secondi, con il perché e la chiave di ogni errore, fino a cento testi al mese.</li>
               <li>La memoria dei tuoi errori: quelli che tornano, quante volte, e quando smettono.</li>

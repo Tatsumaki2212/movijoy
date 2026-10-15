@@ -240,8 +240,8 @@ export default function Casa() {
               dal 15: si compra da soli su /privato. Per le piattaforme
               resta la richiesta: l'offerta è ancora da definire. */}
           <p className="mj-porte__offerta">
-            <strong>Il tuo assistente privato</strong> si attiva da solo: 243,99 € di configurazione, poi
-            60,99 € al mese, IVA inclusa, senza vincolo. <Link href="/privato">Attivalo</Link> ·{" "}
+            <strong>Il tuo assistente privato</strong> si attiva da solo: 199,99 € di configurazione, poi
+            49,99 € al mese, + IVA 22%, senza vincolo. <Link href="/privato">Attivalo</Link> ·{" "}
             <Link href="/entra">Hai già un Movijoy? Entra</Link>
           </p>
         </section>
