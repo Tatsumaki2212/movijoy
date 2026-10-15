@@ -84,6 +84,11 @@ export default async function Privato({ searchParams }: { searchParams: Promise<
             Pagamento con carta su Stripe. Fattura intestabile alla tua azienda: partita IVA alla cassa. Hai già un
             Movijoy? <Link href="/entra">Entra</Link>.
           </p>
+          <p className="mj-modulo__nota">
+            Serve per un&apos;organizzazione — più persone, il tono della casa, l&apos;integrazione? Attivalo per te e
+            dall&apos;area privata passi all&apos;account aziendale, oppure <Link href="/parla">parlane con Movijoy</Link>: il prezzo
+            si fa su accordo.
+          </p>
         </form>
       </section>
 

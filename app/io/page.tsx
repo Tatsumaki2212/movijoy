@@ -21,11 +21,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function Io({ searchParams }: { searchParams: Promise<{ errore?: string }> }) {
+export default async function Io({ searchParams }: { searchParams: Promise<{ errore?: string; azienda?: string; password?: string }> }) {
   const utente = await utenteCorrente();
   if (!utente) redirect("/entra");
   const cliente = await clientePerUtente(utente.id);
-  const { errore } = await searchParams;
+  const { errore, azienda, password } = await searchParams;
 
   if (!cliente) {
     return (
@@ -91,6 +91,7 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
           </p>
           <nav className="mj-io__voci" aria-label="Il tuo conto">
             <Link href="/io/configura">La scheda</Link>
+            {cliente.tipo === "persona" ? <Link href="/io/azienda">Account aziendale</Link> : null}
             <Link href="/io/password">Password</Link>
             <form method="post" action="/api/portale">
               <button type="submit">Il conto</button>
@@ -101,6 +102,15 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
           </nav>
         </div>
         {errore === "conto" && <p className="mj-modulo__stato">Il conto non si apre: scrivi a principale@chelivello.it.</p>}
+        {password === "cambiata" && <p className="mj-modulo__nota">Password salvata.</p>}
+        {cliente.tipo === "organizzazione" && (
+          <p className="mj-io__avviso">
+            <strong>Account aziendale.</strong>{" "}
+            {azienda
+              ? "La richiesta è arrivata: una persona di Che Livello! ti richiama per l'accordo. Intanto Movijoy usa già la scheda dell'organizzazione."
+              : "Movijoy corregge con la scheda dell'organizzazione; l'accordo per le persone in più e l'integrazione si fa con Che Livello!."}
+          </p>
+        )}
         <Chat iniziali={testi} />
       </section>
     </Cornice>

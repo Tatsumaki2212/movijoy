@@ -9,6 +9,7 @@ import { tratto as chiaveTratto } from "./memoria-chiavi";
  */
 
 export type StatoCliente = "in_attesa" | "attivo" | "sospeso" | "chiuso";
+export type TipoCliente = "persona" | "organizzazione";
 
 export interface Cliente {
   id: string;
@@ -18,6 +19,7 @@ export interface Cliente {
   telefono: string | null;
   termini_accettati_il: string | null;
   password_da_cambiare: boolean;
+  tipo: TipoCliente;
   stripe_cliente: string | null;
   stripe_abbonamento: string | null;
   stato: StatoCliente;
@@ -35,6 +37,15 @@ export interface Scheda {
   non_toccare: string[];
   sito_web: string | null;
   note: string | null;
+  /* «Per me» */
+  perche: "lavoro" | "studio" | "viaggio" | "piacere" | null;
+  scrivi: "email" | "messaggi" | "documenti" | "social" | "scuola" | null;
+  difficolta: string | null;
+  /* Organizzazione */
+  azienda: string | null;
+  settore: string | null;
+  persone: number | null;
+  reparti: string | null;
 }
 
 export interface Annotazione {
@@ -65,7 +76,7 @@ export interface Tratto {
 }
 
 const COLONNE_CLIENTE =
-  "id, utente, email, nome, telefono, termini_accettati_il, password_da_cambiare, stripe_cliente, stripe_abbonamento, stato, piano, configurato_il, creato_il";
+  "id, utente, email, nome, telefono, termini_accettati_il, password_da_cambiare, tipo, stripe_cliente, stripe_abbonamento, stato, piano, configurato_il, creato_il";
 
 export async function clientePerUtente(utente: string): Promise<Cliente | null> {
   const sb = servizio();
@@ -216,20 +227,89 @@ export async function salvaScheda(cliente: string, s: Omit<Scheda, "cliente">): 
   return true;
 }
 
-/** La scheda resa in prosa per il modello: corta, e solo quello che c'è. */
+const PERCHE: Record<string, string> = {
+  lavoro: "scrive in inglese per lavoro",
+  studio: "scrive in inglese per lo studio o un esame",
+  viaggio: "scrive in inglese per viaggiare o vivere all'estero",
+  piacere: "scrive in inglese per sé, senza una scadenza",
+};
+const SCRIVI: Record<string, string> = {
+  email: "email",
+  messaggi: "messaggi e chat",
+  documenti: "documenti, relazioni, presentazioni",
+  social: "post e social",
+  scuola: "compiti, tesi, candidature",
+};
+const TONO: Record<string, string> = {
+  cordiale: "cordiale",
+  formale: "formale",
+  diretto: "diretto, poche parole",
+  mio: "il suo: correggi gli errori, non cambiare il suo modo di dire le cose",
+};
+
+/** La scheda resa in prosa per il modello: corta, solo quello che c'è, diversa per persona e organizzazione. */
 export function schedaInProsa(s: Scheda | null, nome?: string | null): string {
   if (!s) return "Nessuna scheda ancora: correggi con un registro professionale neutro, inglese britannico.";
   const righe: string[] = [];
-  if (nome) righe.push(`Si chiama ${nome}.`);
-  if (s.lavoro) righe.push(`Lavoro: ${s.lavoro}.`);
-  righe.push(`Varietà: inglese ${s.varieta === "american" ? "americano" : "britannico"}.`);
-  if (s.tono) righe.push(`Tono che vuole tenere: ${s.tono}.`);
-  if (s.pubblico) righe.push(`A chi scrive di solito: ${s.pubblico}.`);
+  const varieta = `inglese ${s.varieta === "american" ? "americano" : "britannico"}`;
+  if (s.azienda) {
+    righe.push(`È l'account dell'organizzazione «${s.azienda}»${s.settore ? ` (${s.settore})` : ""}.`);
+    if (nome) righe.push(`Chi scrive adesso si chiama ${nome}.`);
+    if (s.pubblico) righe.push(`Chi scrive in inglese, e a chi: ${s.pubblico}.`);
+    righe.push(`Varietà della casa: ${varieta}.`);
+    if (s.tono) righe.push(`Tono della casa: ${s.tono}.`);
+    if (s.sito_web) righe.push(`Il sito: ${s.sito_web}.`);
+  } else {
+    if (nome) righe.push(`Si chiama ${nome}.`);
+    if (s.perche) righe.push(`${PERCHE[s.perche] ?? s.perche}${s.lavoro ? ` (${s.lavoro})` : ""}.`);
+    else if (s.lavoro) righe.push(`Lavoro: ${s.lavoro}.`);
+    if (s.scrivi) righe.push(`Scrive soprattutto: ${SCRIVI[s.scrivi] ?? s.scrivi}.`);
+    righe.push(`Varietà: ${varieta}.`);
+    if (s.tono) righe.push(`Come vuole suonare: ${TONO[s.tono] ?? s.tono}.`);
+    if (s.difficolta) righe.push(`Dice di avere difficoltà con: ${s.difficolta}.`);
+  }
   if (s.non_toccare.length) {
     righe.push(`PAROLE DA NON TOCCARE MAI (nomi, prodotti, termini interni): ${s.non_toccare.join(", ")}.`);
   }
-  if (s.note) righe.push(`Note sue: ${s.note}`);
+  if (s.note) righe.push(`Note: ${s.note}`);
   return righe.join("\n");
+}
+
+export async function cambiaTipo(id: string, tipo: TipoCliente): Promise<void> {
+  const sb = servizio();
+  if (!sb) return;
+  const { error } = await sb.from("mj_clienti").update({ tipo, aggiornato_il: new Date().toISOString() }).eq("id", id);
+  if (error) console.error("clienti: tipo —", error.message);
+}
+
+/**
+ * Il passaggio all'aziendale arriva a Che Livello! come una richiesta
+ * qualunque (tabella richieste_movijoy, SQL 47): l'offerta per le
+ * organizzazioni è su accordo, e qualcuno deve richiamare.
+ */
+export async function segnalaAzienda(
+  cliente: Cliente,
+  d: { azienda: string; settore: string | null; persone: number | null; sito: string | null; telefono: string | null },
+): Promise<void> {
+  const sb = servizio();
+  if (!sb) return;
+  const messaggio = [
+    `Passaggio all'account aziendale da Movijoy privato (${cliente.email}).`,
+    `Organizzazione: ${d.azienda}${d.settore ? ` — ${d.settore}` : ""}.`,
+    d.persone ? `Persone: ${d.persone}.` : null,
+    d.sito ? `Sito: ${d.sito}.` : null,
+    d.telefono ? `Telefono: ${d.telefono}.` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const { error } = await sb.from("richieste_movijoy").insert({
+    nome: cliente.nome ?? d.azienda,
+    email: cliente.email,
+    chi: "piattaforma",
+    messaggio,
+    origine: "area privata: passaggio ad azienda",
+  });
+  if (error) console.error("clienti: segnalazione azienda —", error.message);
 }
 
 /* ── I testi ───────────────────────────────────────────────────── */

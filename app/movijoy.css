@@ -1844,3 +1844,24 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
 .mj-barra__accedi:focus-visible {
   border-color: var(--rosso);
 }
+
+/* ── Scelte in colonna e l'avviso dell'account aziendale ────────── */
+.mj-scelte--colonna {
+  flex-direction: column;
+  gap: 0.55rem;
+  align-items: flex-start;
+}
+
+.mj-io__avviso {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgba(233, 239, 247, 0.18);
+  border-left: 3px solid var(--rosso);
+  border-radius: 4px;
+  color: var(--tenue);
+  line-height: 1.5;
+}
+
+.mj-io__avviso strong {
+  color: var(--chiaro);
+}
