@@ -74,7 +74,12 @@
   color: var(--chiaro);
   font-family: var(--f-stampa-stack, "Archivo", system-ui, sans-serif);
   min-height: 100vh;
+  /* ⚠️ CLIP, NON HIDDEN: taglia lo sbordo orizzontale allo stesso modo,
+     ma non trasforma .mj in un contenitore di scorrimento — e così
+     position: sticky nei discendenti (la casella della chat) funziona.
+     La riga con hidden resta per i browser che non conoscono clip. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .mj ::selection {
@@ -1890,17 +1895,13 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
   align-content: start;
 }
 
-/* ⚠️ FIXED, NON STICKY: .mj ha overflow-x: hidden, e un antenato con
-   overflow diverso da visible spegne position: sticky. La casella sta
-   quindi fissa in fondo allo schermo, larga quanto la colonna di
-   lettura, e la chat lascia spazio sotto perché l'ultimo scambio non
-   finisca coperto. */
+/* STICKY, in fondo alla conversazione: scorrendo resta sullo schermo, e
+   quando la chat finisce si ferma lì — sopra il piede, non sopra. Regge
+   perché .mj usa overflow-x: clip, non hidden. */
 .mj-io__modulo {
-  position: fixed;
+  position: sticky;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(76ch, calc(100vw - 2 * clamp(1.25rem, 4vw, 3.5rem)));
+  width: 100%;
   z-index: 4;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -1912,7 +1913,7 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
 }
 
 .mj-io__chat {
-  padding-bottom: 8rem;
+  padding-bottom: 0.5rem;
 }
 
 .mj-io__contesto {
@@ -1952,7 +1953,7 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
   }
 
   .mj-io__chat {
-    padding-bottom: 11rem;
+    padding-bottom: 0.5rem;
   }
 }
 
