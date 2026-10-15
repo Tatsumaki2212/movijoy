@@ -36,6 +36,7 @@ export default async function Entra({
           </p>
         )}
         {errore === "password" && <p className="mj-modulo__stato">Email o password non giuste.</p>}
+        {errore === "troppi" && <p className="mj-modulo__stato">Troppi tentativi: aspetta un quarto d&apos;ora, o chiedi una password nuova qui sotto.</p>}
         {errore === "email" && <p className="mj-modulo__stato">Quell&apos;indirizzo non sembra esistere: controlla come l&apos;hai scritto.</p>}
         {errore === "link" && <p className="mj-modulo__stato">L&apos;ingresso non è configurato: scrivi a principale@chelivello.it.</p>}
 

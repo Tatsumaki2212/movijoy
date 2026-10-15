@@ -124,3 +124,7 @@ aggiorna i tratti. `POST /api/portale` apre il portale di Stripe; `POST /api/esc
 Variabili in più: `SUPABASE_ANON_KEY` (per la sessione), `ANTHROPIC_API_KEY`, `STRIPE_SECRET_KEY`,
 `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MJ_CONFIGURAZIONE`, `STRIPE_PRICE_MJ_MENSILE`, `MITTENTE_EMAIL`
 (un mittente verificato su Resend), `RESEND_API_KEY`.
+
+Il login (`POST /api/entra`) usa la chiave di servizio, perché Supabase Auth ha il captcha acceso e il sito
+non ha un widget Turnstile suo; la sessione viene poi scritta nei cookie. Per questo c'è il freno dei
+tentativi (`lib/tentativi.ts`, tabella `mj_tentativi`, SQL 52): otto in un quarto d'ora per IP+email.
