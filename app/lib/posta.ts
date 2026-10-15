@@ -1,15 +1,15 @@
-import { SITO, NOME_SITO } from "./sito";
+import { SITO, NOME_SITO, NOME_CHELIVELLO } from "./sito";
 
 /**
- * La posta di Movijoy privato: due lettere, da Resend.
+ * La posta di Movijoy privato, da Resend.
  *
  * ⚠️ IL MITTENTE È UN INDIRIZZO VERIFICATO SU RESEND (MITTENTE_EMAIL,
  * oggi un indirizzo @chelivello.it): finché il dominio movijoy.it non
  * è verificato lì, una lettera «da movijoy.it» non parte. Il nome
  * mostrato resta Movijoy.
  *
- * `manda` non solleva mai: torna false, e chi chiama decide. Ma qui le
- * lettere portano il link per entrare: chi chiama DEVE guardare
+ * `manda` non solleva mai: torna false, e chi chiama decide. Qui le
+ * lettere portano la password per entrare: chi chiama DEVE guardare
  * l'esito, altrimenti la persona ha pagato e non entra.
  */
 
@@ -42,33 +42,50 @@ function guscio(corpo: string): string {
 <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:6px;padding:32px 28px;line-height:1.55">
 <p style="margin:0 0 20px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:#16233a">Movijoy<span style="color:#c8102e">.</span></p>
 ${corpo}
-<p style="margin:28px 0 0;font-size:12px;color:#6b7280">Che Livello! S.r.l. · Genova · <a href="${SITO}" style="color:#6b7280">${SITO.replace(/^https?:\/\//, "")}</a></p>
+<p style="margin:28px 0 0;font-size:12px;color:#6b7280">${NOME_CHELIVELLO} S.r.l. · Genova · <a href="${SITO}" style="color:#6b7280">${SITO.replace(/^https?:\/\//, "")}</a></p>
 </div></body></html>`;
 }
 
 function tasto(link: string, testo: string): string {
-  return `<p style="margin:24px 0"><a href="${link}" style="display:inline-block;background:#c8102e;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:4px">${testo}</a></p>
-<p style="font-size:13px;color:#6b7280">Se il tasto non funziona: <a href="${link}" style="color:#16233a;word-break:break-all">${link}</a></p>`;
+  return `<p style="margin:24px 0"><a href="${link}" style="display:inline-block;background:#c8102e;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:4px">${testo}</a></p>`;
 }
 
-export function letteraBenvenuto({ link, nome }: { link: string; nome?: string | null }) {
+function credenziali(email: string, password: string | null): string {
+  return (
+    `<table style="margin:18px 0;border-collapse:collapse;font-size:15px"><tr><td style="padding:6px 14px 6px 0;color:#6b7280">Nome utente</td><td style="padding:6px 0"><b>${sfuggi(email)}</b></td></tr>` +
+    (password
+      ? `<tr><td style="padding:6px 14px 6px 0;color:#6b7280">Password temporanea</td><td style="padding:6px 0"><b style="font-family:Consolas,Menlo,monospace;font-size:17px;letter-spacing:1px">${sfuggi(password)}</b></td></tr>`
+      : "") +
+    `</table>`
+  );
+}
+
+/** Il benvenuto: con la password temporanea se l'account è nuovo, altrimenti con quella che la persona ha già. */
+export function letteraBenvenuto({ email, password, nome }: { email: string; password: string | null; nome?: string | null }) {
   return {
-    oggetto: "Il tuo Movijoy è attivo: entra",
+    oggetto: "Il tuo Movijoy è attivo: nome utente e password",
     html: guscio(
-      `<p>${nome ? `${sfuggi(nome)}, il` : "Il"} tuo Movijoy è attivo. Il tasto qui sotto ti fa entrare: cinque domande per dirgli come scrivi, poi è tuo.</p>` +
-        tasto(link, "Entra nel tuo Movijoy") +
-        `<p style="font-size:13px;color:#6b7280">Il link vale un'ora e una volta sola. Scaduto, da ${SITO}/entra te ne mandiamo un altro con la stessa email.</p>`,
+      `<p>${nome ? `${sfuggi(nome)}, il` : "Il"} tuo Movijoy è attivo. Si entra da <a href="${SITO}/entra" style="color:#16233a">${SITO.replace(/^https?:\/\//, "")}/entra</a> con questi dati:</p>` +
+        credenziali(email, password) +
+        (password
+          ? `<p>Al primo accesso ti chiedo di scegliere una password tua: quella qui sopra vale solo per entrare la prima volta.</p>`
+          : `<p>Hai già un account ${NOME_CHELIVELLO} con questa email: la password è la stessa. Se non la ricordi, da <a href="${SITO}/entra" style="color:#16233a">entra</a> puoi chiederne una nuova.</p>`) +
+        tasto(`${SITO}/entra`, "Entra nel tuo Movijoy") +
+        `<p>Dentro ti faccio cinque domande su come scrivi, e poi è tuo.</p>`,
     ),
   };
 }
 
-export function letteraIngresso({ link }: { link: string }) {
+/** La password nuova, a chi l'ha dimenticata. */
+export function letteraNuovaPassword({ email, password }: { email: string; password: string }) {
   return {
-    oggetto: "Il tuo link per entrare in Movijoy",
+    oggetto: "La tua nuova password per Movijoy",
     html: guscio(
-      `<p>Questo è il link per entrare nel tuo Movijoy. Vale un'ora e una volta sola: aprilo dallo stesso telefono o computer da cui vuoi usarlo.</p>` +
-        tasto(link, "Entra") +
-        `<p style="font-size:13px;color:#6b7280">Se non l'hai chiesto tu, ignora questa mail: senza aprire il link non succede niente.</p>`,
+      `<p>Ecco una password nuova per entrare in Movijoy. Quella di prima non vale più.</p>` +
+        credenziali(email, password) +
+        `<p>Al primo accesso ti chiedo di sceglierne una tua.</p>` +
+        tasto(`${SITO}/entra`, "Entra") +
+        `<p style="font-size:13px;color:#6b7280">Se non l'hai chiesta tu, qualcuno ha scritto il tuo indirizzo nel modulo: entra e cambia subito la password, e scrivici a principale@chelivello.it.</p>`,
     ),
   };
 }

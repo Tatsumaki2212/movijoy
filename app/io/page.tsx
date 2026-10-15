@@ -76,6 +76,7 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
     );
   }
 
+  if (cliente.password_da_cambiare) redirect("/io/password");
   const scheda = await schedaDi(cliente.id);
   if (!scheda || !cliente.termini_accettati_il) redirect("/io/configura");
 
@@ -90,6 +91,7 @@ export default async function Io({ searchParams }: { searchParams: Promise<{ err
           </p>
           <nav className="mj-io__voci" aria-label="Il tuo conto">
             <Link href="/io/configura">La scheda</Link>
+            <Link href="/io/password">Password</Link>
             <form method="post" action="/api/portale">
               <button type="submit">Il conto</button>
             </form>

@@ -113,8 +113,10 @@ Controlli prima di un deploy: `npx tsc --noEmit`, `npm run lint`,
 
 Il privato compra da solo: `/privato` → `POST /api/compra` (Stripe Checkout: configurazione una tantum +
 manutenzione mensile) → `/attivato`. Il webhook `POST /api/stripe` crea il cliente (tabelle `mj_*`,
-SQL 49 nel repository di chelivello) e manda la lettera di benvenuto con il link d'ingresso
-(`/auth/conferma?gettone=…`, verificato lato server). `/entra` rimanda il link. `/io` è l'area privata:
+SQL 49 nel repository di chelivello) e manda la lettera di benvenuto con nome utente (l'email) e password temporanea se l'account è nuovo
+(chi ha già un account Che Livello! entra con la sua). `/entra` è email + password (`POST /api/entra`);
+`POST /api/password-dimenticata` manda una password nuova; `/io/password` → `POST /api/password` la cambia,
+obbligatorio dopo una temporanea (`mj_clienti.password_da_cambiare`, SQL 51). `/io` è l'area privata:
 le cinque domande (`/io/configura` → `POST /api/configura`) diventano la scheda dei criteri; la chat
 manda a `POST /api/motore`, che corregge con la scheda e la memoria del cliente (`lib/motore.ts`) e
 aggiorna i tratti. `POST /api/portale` apre il portale di Stripe; `POST /api/esci` esce.

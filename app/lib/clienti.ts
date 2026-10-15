@@ -17,6 +17,7 @@ export interface Cliente {
   nome: string | null;
   telefono: string | null;
   termini_accettati_il: string | null;
+  password_da_cambiare: boolean;
   stripe_cliente: string | null;
   stripe_abbonamento: string | null;
   stato: StatoCliente;
@@ -64,7 +65,7 @@ export interface Tratto {
 }
 
 const COLONNE_CLIENTE =
-  "id, utente, email, nome, telefono, termini_accettati_il, stripe_cliente, stripe_abbonamento, stato, piano, configurato_il, creato_il";
+  "id, utente, email, nome, telefono, termini_accettati_il, password_da_cambiare, stripe_cliente, stripe_abbonamento, stato, piano, configurato_il, creato_il";
 
 export async function clientePerUtente(utente: string): Promise<Cliente | null> {
   const sb = servizio();
@@ -101,12 +102,12 @@ export async function clientePerAbbonamento(stripeAbbonamento: string): Promise<
  * uno nuovo, già confermato — l'indirizzo lo ha appena usato per
  * pagare, e il link per entrare arriva proprio lì.
  */
-export async function utentePerEmail(email: string): Promise<string | null> {
+export async function utentePerEmail(email: string): Promise<{ id: string; nuovo: boolean } | null> {
   const sb = servizio();
   if (!sb) return null;
   const indirizzo = email.trim().toLowerCase();
   const { data: trovato } = await sb.rpc("utente_per_email", { p_email: indirizzo });
-  if (trovato) return trovato as string;
+  if (trovato) return { id: trovato as string, nuovo: false };
   const { data, error } = await sb.auth.admin.createUser({
     email: indirizzo,
     email_confirm: true,
@@ -116,20 +117,21 @@ export async function utentePerEmail(email: string): Promise<string | null> {
     console.error("clienti: creazione utente —", error?.message);
     return null;
   }
-  return data.user.id;
+  return { id: data.user.id, nuovo: true };
 }
 
-/** Crea o aggiorna il cliente dopo un acquisto. Torna la riga. */
+/** Crea o aggiorna il cliente dopo un acquisto. Torna la riga, e se l'account Supabase è appena nato. */
 export async function attivaCliente(dati: {
   email: string;
   nome?: string | null;
   stripeCliente: string | null;
   stripeAbbonamento: string | null;
-}): Promise<Cliente | null> {
+}): Promise<{ cliente: Cliente; nuovo: boolean } | null> {
   const sb = servizio();
   if (!sb) return null;
   const email = dati.email.trim().toLowerCase();
-  const utente = await utentePerEmail(email);
+  const u = await utentePerEmail(email);
+  const utente = u?.id ?? null;
   const { data, error } = await sb
     .from("mj_clienti")
     .upsert(
@@ -150,7 +152,18 @@ export async function attivaCliente(dati: {
     console.error("clienti: attivazione —", error.message);
     return null;
   }
-  return data as Cliente;
+  return { cliente: data as Cliente, nuovo: Boolean(u?.nuovo) };
+}
+
+/** Segna se la persona deve ancora scegliere una password sua. */
+export async function segnaPassword(id: string, daCambiare: boolean): Promise<void> {
+  const sb = servizio();
+  if (!sb) return;
+  const { error } = await sb
+    .from("mj_clienti")
+    .update({ password_da_cambiare: daCambiare, aggiornato_il: new Date().toISOString() })
+    .eq("id", id);
+  if (error) console.error("clienti: password —", error.message);
 }
 
 export async function cambiaStato(id: string, stato: StatoCliente): Promise<void> {

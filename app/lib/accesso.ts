@@ -1,29 +1,56 @@
-import { servizio } from "./db";
-import { SITO } from "./sito";
+import { randomInt } from "node:crypto";
+import { servizio, sessione } from "./db";
 
 /**
- * L'ingresso nell'area privata: un link per email, niente password.
+ * L'ingresso nell'area privata: email e password.
  *
- * ⚠️ IL LINK LO COSTRUIAMO NOI con il gettone che Supabase genera lato
- * server (`generateLink` → `hashed_token`), e lo verifichiamo in
- * /auth/conferma con `verifyOtp`. Non si usa il link pronto di
- * Supabase: quello porta il gettone nel frammento dopo il cancelletto,
- * che al server non arriva mai (chelivello ci ha perso mesi), e passa
- * dal loro modello di email invece che dalla nostra lettera.
+ * Appena il cliente nasce (webhook di Stripe) gli si assegna una
+ * password temporanea e gliela si manda per email; al primo accesso
+ * deve cambiarla (/io/password). Chi aveva già un account Che Livello!
+ * con la stessa email entra con la password che ha: l'account Supabase
+ * è lo stesso per i due siti, e sovrascrivergli la password da qui
+ * gliela cambierebbe anche di là senza che l'abbia chiesto.
  *
- * Il gettone vale un'ora e una volta sola.
+ * ⚠️ LA PASSWORD TEMPORANEA NON SI SALVA DA NESSUNA PARTE in chiaro:
+ * va nella lettera e nel database di Supabase, già cifrata. Se la
+ * lettera si perde, se ne genera un'altra.
  */
-export async function linkIngresso(email: string): Promise<string | null> {
+
+/* Senza 0/O, 1/l/I: si legge da una mail e si ricopia senza dubbi. */
+const ALFABETO = "abcdefghjkmnpqrstuvwxyz23456789";
+
+export function passwordTemporanea(): string {
+  const gruppo = () => Array.from({ length: 4 }, () => ALFABETO[randomInt(ALFABETO.length)]).join("");
+  return `${gruppo()}-${gruppo()}-${gruppo()}`;
+}
+
+/** Assegna una password nuova all'account: torna la password in chiaro, da mandare per email. */
+export async function assegnaPasswordTemporanea(utente: string): Promise<string | null> {
   const sb = servizio();
   if (!sb) return null;
-  const { data, error } = await sb.auth.admin.generateLink({
-    type: "magiclink",
-    email: email.trim().toLowerCase(),
-  });
-  const gettone = data?.properties?.hashed_token;
-  if (error || !gettone) {
-    console.error("accesso: link —", error?.message);
+  const password = passwordTemporanea();
+  const { error } = await sb.auth.admin.updateUserById(utente, { password });
+  if (error) {
+    console.error("accesso: password temporanea —", error.message);
     return null;
   }
-  return `${SITO}/auth/conferma?gettone=${encodeURIComponent(gettone)}`;
+  return password;
+}
+
+/** Entra con email e password: scrive i cookie della sessione. Torna l'id utente o null. */
+export async function entraConPassword(email: string, password: string): Promise<string | null> {
+  const sb = await sessione();
+  if (!sb) return null;
+  const { data, error } = await sb.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+  if (error || !data.user) return null;
+  return data.user.id;
+}
+
+/** Cambia la password di chi è collegato. */
+export async function cambiaPassword(password: string): Promise<boolean> {
+  const sb = await sessione();
+  if (!sb) return false;
+  const { error } = await sb.auth.updateUser({ password });
+  if (error) console.error("accesso: cambio password —", error.message);
+  return !error;
 }

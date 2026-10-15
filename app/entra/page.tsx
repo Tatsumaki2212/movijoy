@@ -6,9 +6,10 @@ import Cornice from "../components/Cornice";
 import { utenteCorrente } from "../lib/db";
 
 /**
- * «Entra»: l'email, e arriva il link. Nessuna password da ricordare.
- * La pagina risponde sempre allo stesso modo (vedi api/entra): se
- * l'indirizzo ha un Movijoy, la lettera è partita.
+ * «Entra»: email e password. Il nome utente è l'email; la prima
+ * password arriva per email appena il Movijoy è attivo, e al primo
+ * accesso si sceglie la propria. Chi l'ha dimenticata ne chiede una
+ * nuova dallo stesso posto.
  */
 
 export const metadata: Metadata = {
@@ -16,31 +17,50 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function Entra({ searchParams }: { searchParams: Promise<{ mandato?: string; errore?: string }> }) {
+export default async function Entra({
+  searchParams,
+}: {
+  searchParams: Promise<{ mandata?: string; errore?: string }>;
+}) {
   if (await utenteCorrente()) redirect("/io");
-  const { mandato, errore } = await searchParams;
+  const { mandata, errore } = await searchParams;
   return (
     <Cornice>
       <section className="mj-foglio mj-sezione mj-privato">
         <p className="mj-blog__data">Entra</p>
         <h1 className="mj-blog__titolo">Il tuo Movijoy.</h1>
-        {mandato ? (
-          <p className="mj-blog__estratto">
-            Se quell&apos;indirizzo ha un Movijoy, il link per entrare è partito: vale un&apos;ora e una volta sola.
+        <p className="mj-blog__estratto">Il nome utente è l&apos;email con cui l&apos;hai attivato.</p>
+        {mandata && (
+          <p className="mj-modulo__stato">
+            Se quell&apos;indirizzo ha un Movijoy, la password nuova è partita per email.
           </p>
-        ) : (
-          <p className="mj-blog__estratto">Scrivi l&apos;email con cui hai attivato Movijoy: ti mando il link per entrare.</p>
         )}
-        {errore === "scaduto" && <p className="mj-modulo__stato">Quel link era già usato o scaduto: te ne mando uno nuovo.</p>}
+        {errore === "password" && <p className="mj-modulo__stato">Email o password non giuste.</p>}
         {errore === "email" && <p className="mj-modulo__stato">Quell&apos;indirizzo non sembra esistere: controlla come l&apos;hai scritto.</p>}
         {errore === "link" && <p className="mj-modulo__stato">L&apos;ingresso non è configurato: scrivi a principale@chelivello.it.</p>}
+
         <form className="mj-modulo mj-privato__modulo" method="post" action="/api/entra">
           <label className="mj-modulo__etichetta" htmlFor="email">
-            La tua email
+            Email
           </label>
-          <input id="email" name="email" type="email" autoComplete="email" required className="mj-modulo__campo" maxLength={200} />
+          <input id="email" name="email" type="email" autoComplete="username" required className="mj-modulo__campo" maxLength={200} />
+          <label className="mj-modulo__etichetta" htmlFor="password">
+            Password
+          </label>
+          <input id="password" name="password" type="password" autoComplete="current-password" required className="mj-modulo__campo" maxLength={200} />
           <button type="submit" className="mj-tasto">
-            Mandami il link
+            Entra
+          </button>
+        </form>
+
+        <form className="mj-modulo mj-privato__modulo mj-entra__dimenticata" method="post" action="/api/password-dimenticata">
+          <p className="mj-modulo__nota">Password dimenticata? Scrivi l&apos;email e te ne mando una nuova.</p>
+          <label className="mj-modulo__etichetta" htmlFor="email-dimenticata">
+            Email
+          </label>
+          <input id="email-dimenticata" name="email" type="email" autoComplete="username" required className="mj-modulo__campo" maxLength={200} />
+          <button type="submit" className="mj-tasto mj-tasto--vuoto">
+            Mandami una password nuova
           </button>
           <p className="mj-modulo__nota">
             Non hai ancora un Movijoy? <Link href="/privato">Attivalo</Link>.

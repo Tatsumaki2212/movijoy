@@ -26,6 +26,7 @@ export default async function Configura({ searchParams }: { searchParams: Promis
   if (!utente) redirect("/entra");
   const cliente = await clientePerUtente(utente.id);
   if (!cliente) redirect("/io");
+  if (cliente.password_da_cambiare) redirect("/io/password");
   const s = await schedaDi(cliente.id);
   const { errore } = await searchParams;
   const prima = !s;

@@ -1,35 +1,30 @@
 import { NextResponse } from "next/server";
-import { clientePerEmail } from "@/app/lib/clienti";
-import { linkIngresso } from "@/app/lib/accesso";
-import { letteraIngresso, manda } from "@/app/lib/posta";
+import { entraConPassword } from "@/app/lib/accesso";
+import { clientePerUtente } from "@/app/lib/clienti";
 import { SITO } from "@/app/lib/sito";
-import { emailValida } from "@/app/lib/verifica";
 
 /**
- * «Mandami il link»: il modulo di /entra.
+ * «Entra»: email e password. Il nome utente è l'email.
  *
- * ⚠️ RISPONDE SEMPRE ALLO STESSO MODO, esista o no l'indirizzo. Una
- * pagina che dice «non risulta nessun cliente» è un modo per scoprire
- * chi è cliente, un indirizzo per volta. La lettera parte solo a chi
- * ha un Movijoy; gli altri vedono la stessa frase.
+ * Password sbagliata o indirizzo sconosciuto danno la stessa frase: una
+ * pagina che distingue i due casi dice a chi prova indirizzi a caso
+ * quali sono clienti. Chi entra con una password temporanea va a
+ * sceglierne una sua prima di tutto il resto.
  */
 export async function POST(req: Request) {
   let email = "";
+  let password = "";
   try {
     const modulo = await req.formData();
     email = String(modulo.get("email") ?? "").trim().toLowerCase();
+    password = String(modulo.get("password") ?? "");
   } catch {}
-  if (!(await emailValida(email))) {
-    return NextResponse.redirect(`${SITO}/entra?errore=email`, 303);
-  }
+  if (!email || !password) return NextResponse.redirect(`${SITO}/entra?errore=password`, 303);
 
-  const cliente = await clientePerEmail(email);
-  if (cliente && cliente.stato !== "chiuso") {
-    const link = await linkIngresso(email);
-    if (link) {
-      const L = letteraIngresso({ link });
-      await manda({ a: email, oggetto: L.oggetto, html: L.html });
-    }
-  }
-  return NextResponse.redirect(`${SITO}/entra?mandato=1`, 303);
+  const utente = await entraConPassword(email, password);
+  if (!utente) return NextResponse.redirect(`${SITO}/entra?errore=password`, 303);
+
+  const cliente = await clientePerUtente(utente);
+  if (cliente?.password_da_cambiare) return NextResponse.redirect(`${SITO}/io/password`, 303);
+  return NextResponse.redirect(`${SITO}/io`, 303);
 }

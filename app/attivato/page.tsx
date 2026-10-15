@@ -17,8 +17,9 @@ export default function Attivato() {
         <p className="mj-blog__data">Fatto</p>
         <h1 className="mj-blog__titolo">Il tuo Movijoy è attivo.</h1>
         <p className="mj-blog__estratto">
-          Controlla la posta: ti ho mandato il link per entrare all&apos;indirizzo che hai dato alla cassa. Se fra
-          due minuti non è arrivato, guarda nella posta indesiderata, oppure <Link href="/entra">chiedine un altro</Link>.
+          Controlla la posta: all&apos;indirizzo che hai dato alla cassa ti ho mandato nome utente e password per
+          entrare. Se fra due minuti non è arrivata, guarda nella posta indesiderata, oppure da{" "}
+          <Link href="/entra">entra</Link> chiedi una password nuova.
         </p>
         <p className="mj-sezione__dice">
           Dentro ti faccio cinque domande su come scrivi, e poi è tuo.

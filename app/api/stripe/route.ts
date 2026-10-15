@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/app/lib/stripe";
 import { servizio } from "@/app/lib/db";
-import { attivaCliente, cambiaStato, clientePerAbbonamento, type StatoCliente } from "@/app/lib/clienti";
-import { linkIngresso } from "@/app/lib/accesso";
+import { attivaCliente, cambiaStato, clientePerAbbonamento, segnaPassword, type StatoCliente } from "@/app/lib/clienti";
+import { assegnaPasswordTemporanea } from "@/app/lib/accesso";
 import { letteraBenvenuto, manda } from "@/app/lib/posta";
 
 /**
@@ -68,17 +68,25 @@ export async function POST(req: Request) {
           console.error("stripe: sessione senza email", sess.id);
           break;
         }
-        const cliente = await attivaCliente({
+        const esito = await attivaCliente({
           email,
           nome: sess.customer_details?.name ?? null,
           stripeCliente: typeof sess.customer === "string" ? sess.customer : (sess.customer?.id ?? null),
           stripeAbbonamento:
             typeof sess.subscription === "string" ? sess.subscription : (sess.subscription?.id ?? null),
         });
-        if (!cliente) throw new Error("cliente non creato");
-        const link = await linkIngresso(email);
-        if (!link) throw new Error("link d'ingresso non generato");
-        const L = letteraBenvenuto({ link, nome: cliente.nome });
+        if (!esito) throw new Error("cliente non creato");
+        const { cliente, nuovo } = esito;
+        /* Account appena nato: password temporanea, da cambiare al primo
+           accesso. Account che c'era già (Che Livello!): la password è la
+           sua, e non si tocca. */
+        let password: string | null = null;
+        if (nuovo && cliente.utente) {
+          password = await assegnaPasswordTemporanea(cliente.utente);
+          if (!password) throw new Error("password temporanea non assegnata");
+          await segnaPassword(cliente.id, true);
+        }
+        const L = letteraBenvenuto({ email, password, nome: cliente.nome });
         const partita = await manda({ a: email, oggetto: L.oggetto, html: L.html });
         if (!partita) console.error("stripe: la lettera di benvenuto non è partita per", email);
         break;
