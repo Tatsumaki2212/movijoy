@@ -1962,3 +1962,31 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
   font-size: 0.85rem;
   color: var(--tenue);
 }
+
+/* L'area privata è più larga della colonna di lettura del blog: la barra
+   con le voci sta su una riga sola e la chat ha più respiro. */
+.mj-io {
+  max-width: 104ch;
+}
+
+.mj-io__barra {
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.mj-io__barra .mj-blog__data {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.mj-io__voci {
+  gap: clamp(1rem, 2.5vw, 2.2rem);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 760px) {
+  .mj-io__barra {
+    flex-wrap: wrap;
+  }
+}
