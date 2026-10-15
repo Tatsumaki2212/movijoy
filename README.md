@@ -60,7 +60,7 @@ Variabili d'ambiente del progetto Vercel:
 - `NEXT_PUBLIC_SITE_URL` — facoltativa, l'indirizzo canonico se diverso
   da `https://www.movijoy.it`. Deve essere quello definitivo, che
   risponde 200 senza rimbalzi.
-- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — **il progetto Supabase di
+- `SUPABASE_URL (vale anche NEXT_PUBLIC_SUPABASE_URL)`, `SUPABASE_SERVICE_ROLE_KEY` — **il progetto Supabase di
   chelivello**, non uno nuovo. Il modulo della richiesta scrive nella
   tabella `richieste_movijoy`, creata da `supabase/47-richieste-movijoy.sql`
   nel repository di chelivello: quella migrazione va lanciata prima.

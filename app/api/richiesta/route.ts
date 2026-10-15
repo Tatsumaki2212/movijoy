@@ -95,10 +95,15 @@ export async function POST(req: Request) {
      con TURNSTILE_SECRET, e rifiutare se non passa. Oggi non c'è una
      chiave per movijoy.it e il modulo deve funzionare lo stesso. */
 
-  const url = process.env.SUPABASE_URL;
+  /* ⚠️ DUE NOMI PER L'INDIRIZZO. Su chelivello la variabile si chiama
+     NEXT_PUBLIC_SUPABASE_URL e chi copia le variabili da là a qua copia
+     quel nome: dal 13 al 15 ottobre 2026 il modulo in produzione ha
+     risposto 503 a tutti per questo. L'indirizzo non è un segreto;
+     la chiave di servizio sì, e ha un nome solo. */
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const chiave = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !chiave) {
-    console.error("richiesta: Supabase non configurato");
+    console.error("richiesta: Supabase non configurato —", !url ? "manca l'indirizzo" : "manca la chiave di servizio");
     return NextResponse.json(
       { errore: "Il modulo non è ancora collegato. Scrivi a principale@chelivello.it." },
       { status: 503 },
