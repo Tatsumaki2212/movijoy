@@ -1907,8 +1907,8 @@ html[data-js] .mj-casa[data-fase="raddrizza"] .mj-correzione__perche {
   grid-template-areas: "contesto testo invia";
   gap: 0.6rem;
   align-items: end;
-  padding: 0.9rem 0 1.1rem;
-  background: linear-gradient(180deg, rgba(11, 19, 32, 0) 0%, #0b1320 22%);
+  padding: 1.1rem 0 1.1rem;
+  background: linear-gradient(180deg, rgba(11, 19, 32, 0) 0%, #0b1320 14%);
 }
 
 .mj-io__chat {
