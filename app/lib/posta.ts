@@ -1,5 +1,4 @@
 import { SITO, NOME_SITO, NOME_CHELIVELLO } from "./sito";
-import { CONFIGURAZIONE_TESTO, MENSILE_TESTO, PIU_IVA } from "./prezzi-testo";
 
 /**
  * La posta di Movijoy privato, da Resend.
@@ -97,18 +96,18 @@ export function letteraBenvenuto({ email, password, nome }: { email: string; pas
 /* ── Il dialogo della pagina principale ──────────────────────────── */
 
 /** A chi ha risposto «per me»: Movijoy si attiva da solo, ecco il tasto.
-    Nessuno gli scrive a mano (Lorenzo, 16 ottobre 2026): la lettera è
-    il seguito, e la cassa è la porta. */
+    Nessuno gli scrive a mano, e nella lettera NON ci sono i prezzi
+    (Lorenzo, 16 ottobre 2026: «loro premono il pulsante e li vedono poi
+    sul link dove porta»). Niente chiamata di configurazione: il Movijoy
+    personale non ne ha bisogno. */
 export function letteraAttiva({ nome }: { nome?: string | null }) {
   const chi = nome ? sfuggi(nome.split(" ")[0]) : null;
   return {
     oggetto: "Il tuo Movijoy: si attiva da solo, ecco come",
     html: guscio(
-      `<p>${chi ? `Ciao ${chi}, grazie` : "Grazie"} per le risposte. Movijoy per te non aspetta nessuno: si attiva dal sito, con la carta, e in pochi minuti è tuo.</p>` +
-        `<table style="margin:18px 0;border-collapse:collapse;font-size:15px"><tr><td style="padding:6px 14px 6px 0;color:#6b7280">Configurazione, una volta</td><td style="padding:6px 0"><b>${CONFIGURAZIONE_TESTO}</b> ${PIU_IVA}</td></tr><tr><td style="padding:6px 14px 6px 0;color:#6b7280">Manutenzione, ogni mese</td><td style="padding:6px 0"><b>${MENSILE_TESTO}</b> ${PIU_IVA}, senza vincolo</td></tr></table>` +
-        `<p>Il totale con l'IVA lo vedi alla cassa, prima di pagare. Dentro ti faccio cinque domande su come scrivi, e la chiamata di configurazione di quaranta minuti con una persona di ${NOME_CHELIVELLO} è compresa.</p>` +
+      `<p>${chi ? `Ciao ${chi}, grazie` : "Grazie"} per le risposte. Movijoy per te non aspetta nessuno: si attiva dal sito, con la carta, e in pochi minuti è tuo. Dentro ti faccio cinque domande su come scrivi, e poi corregge come scriveresti tu.</p>` +
         tasto(`${SITO}/privato`, "Attiva il tuo Movijoy") +
-        `<p style="font-size:13px;color:#6b7280">Se hai una domanda prima di attivarlo, rispondi a questa email: arriva a una persona.</p>`,
+        `<p style="font-size:13px;color:#6b7280">Se hai una domanda prima di attivarlo, rispondi a questa email: arriva a una persona di ${NOME_CHELIVELLO}.</p>`,
     ),
   };
 }

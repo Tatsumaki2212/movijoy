@@ -23,7 +23,7 @@ export function Contatto({ cliente }: { cliente: Cliente }) {
   return (
     <>
       <label className="mj-modulo__etichetta" htmlFor="telefono">
-        Un numero di telefono per la chiamata di configurazione compresa (facoltativo)
+        Un numero di telefono, per sentirti se serve (facoltativo)
       </label>
       <input id="telefono" name="telefono" type="tel" autoComplete="tel" className="mj-modulo__campo" maxLength={40} defaultValue={cliente.telefono ?? ""} placeholder="+39 …" />
 

@@ -12,8 +12,10 @@ import { SITO } from "../lib/sito";
  * non chiama per sapere quanto costa, chiude la pagina.
  *
  * ⚠️ OGNI RIGA DICE UNA COSA CHE ESISTE. Il tagliando è automatico, la
- * voce non c'è ancora e non è promessa, la chiamata con Gaspare si
- * prenota dall'area privata.
+ * voce non c'è ancora e non è promessa. La chiamata di configurazione di
+ * quaranta minuti NON c'è più per il privato (Lorenzo, 16 ottobre 2026:
+ * «il Movijoy personale non ha bisogno di configurazione assistita»): le
+ * cinque domande bastano, e si fanno da soli.
  */
 
 export const metadata: Metadata = {
@@ -44,7 +46,7 @@ export default async function Privato({ searchParams }: { searchParams: Promise<
             <ul className="mj-privato__lista">
               <li>Cinque domande per dirgli come scrivi: lavoro, varietà, tono, a chi scrivi, le parole da non toccare mai.</li>
               <li>La tua scheda dei criteri: la vedi, la correggi, è tua.</li>
-              <li>La chiamata di quaranta minuti con una persona di Che Livello!, compresa: si prenota da dentro.</li>
+              <li>Pronto in pochi minuti, da solo: nessuna chiamata, nessuna attesa.</li>
             </ul>
           </div>
           <div className="mj-privato__prezzo">

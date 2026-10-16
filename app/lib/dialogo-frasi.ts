@@ -7,8 +7,6 @@
  * mandargli un testo suo e consumare i crediti della voce.
  */
 
-import { CONFIGURAZIONE_TESTO, MENSILE_TESTO, PIU_IVA } from "./prezzi-testo";
-
 export type Scelta = { v: string; t: string };
 export type Domanda =
   | { id: "nome"; tipo: "testo"; campo: string }
@@ -83,7 +81,7 @@ export function frase(id: IdFrase, dati: { nome?: string; chi?: string; email?: 
     case "grazie":
       return dati.chi === "piattaforma"
         ? `Grazie${nome ? `, ${nome}` : ""}. Le tue risposte sono arrivate: una persona di Che Livello! le legge e ti contatta${dati.email ? ` a ${dati.email}` : ""} per l'accordo, di solito in giornata.`
-        : `Grazie${nome ? `, ${nome}` : ""}. Le tue risposte sono arrivate. Movijoy per te si attiva da solo: ti ho mandato${dati.email ? ` a ${dati.email}` : ""} il link per attivarlo, ${CONFIGURAZIONE_TESTO} di configurazione e poi ${MENSILE_TESTO} al mese, ${PIU_IVA}, senza vincolo.`;
+        : `Grazie${nome ? `, ${nome}` : ""}. Le tue risposte sono arrivate. Movijoy per te si attiva da solo, senza aspettare nessuno: ti ho mandato${dati.email ? ` a ${dati.email}` : ""} il link per attivarlo, e il tasto qui sotto porta allo stesso posto.`;
   }
 }
 
@@ -92,10 +90,6 @@ export function frase(id: IdFrase, dati: { nome?: string; chi?: string; email?: 
 export function daDire(id: IdFrase, dati: { nome?: string; chi?: string; email?: string } = {}): string {
   const testo = frase(id, dati);
   if (id === "email") return testo.replace("Che Livello!?", "Che Livello?");
-  if (id === "grazie")
-    return testo
-      .replace(/ a \S+@\S+?(?=[ ,.])/, "")
-      .replace(/(\d+),(\d+) €/g, "$1 euro e $2")
-      .replace(/\+ IVA 22%/g, "più IVA");
+  if (id === "grazie") return testo.replace(/ a \S+@\S+?(?=[ ,.])/, "");
   return testo;
 }

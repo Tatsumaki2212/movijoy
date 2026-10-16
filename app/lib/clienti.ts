@@ -188,7 +188,8 @@ export async function cambiaStato(id: string, stato: StatoCliente): Promise<void
 }
 
 /**
- * Il telefono (per la chiamata di configurazione) e, una volta sola,
+ * Il telefono (per sentire la persona se serve; la chiamata di
+ * configurazione per il privato non c'è più dal 16 ottobre 2026) e, una volta sola,
  * l'accettazione dei termini e della privacy di Che Livello!, con data
  * e ora. L'accettazione non si toglie da qui: è un fatto, non un campo.
  */
