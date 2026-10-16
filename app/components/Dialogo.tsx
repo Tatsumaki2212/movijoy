@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Sfera from "./Sfera";
 import Voce, { useVoce } from "./Voce";
 import { di } from "../lib/voce";
-import { DOMANDE, frase as diceFrase, type Domanda } from "../lib/dialogo-frasi";
+import { DOMANDE, campoDi, frase as diceFrase, type Domanda } from "../lib/dialogo-frasi";
 
 /**
  * Parla con Movijoy: le domande di profilazione, una per volta.
@@ -138,7 +138,7 @@ export default function Dialogo() {
         return;
       }
       try {
-        sessionStorage.setItem("movijoy:grazie", JSON.stringify({ nome: tutte.nome, email: tutte.email }));
+        sessionStorage.setItem("movijoy:grazie", JSON.stringify({ nome: tutte.nome, email: tutte.email, chi: tutte.chi }));
       } catch {}
       router.push("/grazie");
     } catch {
@@ -226,7 +226,7 @@ export default function Dialogo() {
             ) : (
               <>
                 <label className="mj-modulo__etichetta" htmlFor="risposta">
-                  {domanda.campo}
+                  {campoDi(domanda, risposte.chi)}
                 </label>
                 <input
                   id="risposta"

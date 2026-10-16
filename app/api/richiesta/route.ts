@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { emailValida as emailEsiste } from "@/app/lib/verifica";
+import { avvisoRichiesta, letteraAttiva, letteraRicevuta, manda, postaConfigurata } from "@/app/lib/posta";
 
 /**
  * La richiesta: chi vuole Movijoy scrive, e noi rispondiamo.
@@ -28,7 +29,8 @@ import { emailValida as emailEsiste } from "@/app/lib/verifica";
  *
  * Variabili d'ambiente del progetto Vercel di movijoy:
  *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY — il progetto di chelivello
- *   RESEND_API_KEY, RICHIESTE_A — l'avviso per posta (facoltativi)
+ *   RESEND_API_KEY, MITTENTE_EMAIL — le lettere (lib/posta.ts)
+ *   RICHIESTE_A — a chi arriva l'avviso; senza, principale@chelivello.it
  *
  * ⚠️ NIENTE `export const dynamic` QUI. Lo scaffold di Next 16 accende
  * `cacheComponents` in next.config.ts, e quella configurazione rifiuta
@@ -50,10 +52,6 @@ function pulisci(v: unknown, max: number): string {
 
 function emailValida(e: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
-}
-
-function sfuggi(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
 export async function POST(req: Request) {
@@ -133,25 +131,36 @@ export async function POST(req: Request) {
     );
   }
 
-  /* L'avviso: parte dopo il salvataggio e non può farlo fallire. */
-  const resend = process.env.RESEND_API_KEY;
-  const a = process.env.RICHIESTE_A;
-  if (resend && a) {
-    try {
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${resend}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: "Movijoy <richieste@movijoy.it>",
-          to: [a],
-          reply_to: email,
-          subject: `Richiesta Movijoy — ${nome || email}${chi ? ` (${chi})` : ""}`,
-          html: `<p><b>${sfuggi(nome || "(senza nome)")}</b> &lt;${sfuggi(email)}&gt;${chi ? ` · ${sfuggi(chi)}` : ""}</p><p>${sfuggi(messaggio || "(nessun messaggio)").replace(/\n/g, "<br>")}</p><p style="color:#888">origine: ${sfuggi(origine ?? "—")}</p>`,
-        }),
+  /* Le lettere: partono a risposta già data e non possono far fallire
+     la richiesta. Due, e tutte e due dal mittente verificato di
+     lib/posta.ts:
+       · a chi ha scritto — «per me» riceve il tasto per attivare Movijoy
+         da solo, perché nessuno gli scrive a mano (Lorenzo, 16 ottobre
+         2026); «per la mia piattaforma» riceve la conferma che una
+         persona lo contatta;
+       · a chi risponde (RICHIESTE_A, altrimenti principale@chelivello.it).
+     ⚠️ Fino al 16 ottobre 2026 l'avviso partiva da richieste@movijoy.it,
+     un dominio non verificato su Resend, e a chi scriveva non arrivava
+     niente: Lorenzo ha compilato il dialogo e non ha ricevuto nessuna
+     mail. Il mittente ora è quello di MITTENTE_EMAIL, come per le
+     password. */
+  if (postaConfigurata) {
+    after(async () => {
+      const L = chi === "piattaforma" ? letteraRicevuta({ nome }) : letteraAttiva({ nome });
+      const andata = await manda({ a: email, oggetto: L.oggetto, html: L.html });
+      if (!andata) console.error("richiesta: LETTERA NON SPEDITA", { email, chi });
+
+      const A = avvisoRichiesta({ nome, email, chi, messaggio, origine });
+      const avvisato = await manda({
+        a: process.env.RICHIESTE_A ?? "principale@chelivello.it",
+        oggetto: A.oggetto,
+        html: A.html,
+        rispondiA: email,
       });
-    } catch (e) {
-      console.error("richiesta: avviso non partito", e);
-    }
+      if (!avvisato) console.error("richiesta: AVVISO NON SPEDITO", { email, chi });
+    });
+  } else {
+    console.warn("richiesta salvata ma nessuna lettera: mancano RESEND_API_KEY o MITTENTE_EMAIL");
   }
 
   return NextResponse.json({ ok: true });

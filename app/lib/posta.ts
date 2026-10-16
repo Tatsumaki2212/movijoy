@@ -1,4 +1,5 @@
 import { SITO, NOME_SITO, NOME_CHELIVELLO } from "./sito";
+import { CONFIGURAZIONE_TESTO, MENSILE_TESTO, PIU_IVA } from "./prezzi-testo";
 
 /**
  * La posta di Movijoy privato, da Resend.
@@ -15,7 +16,18 @@ import { SITO, NOME_SITO, NOME_CHELIVELLO } from "./sito";
 
 export const postaConfigurata = Boolean(process.env.RESEND_API_KEY && process.env.MITTENTE_EMAIL);
 
-export async function manda({ a, oggetto, html }: { a: string; oggetto: string; html: string }): Promise<boolean> {
+export async function manda({
+  a,
+  oggetto,
+  html,
+  rispondiA,
+}: {
+  a: string;
+  oggetto: string;
+  html: string;
+  /** A chi arriva la risposta se chi riceve preme «rispondi»: per gli avvisi a Lorenzo, la persona che ha scritto. */
+  rispondiA?: string;
+}): Promise<boolean> {
   const chiave = process.env.RESEND_API_KEY;
   const mittente = process.env.MITTENTE_EMAIL;
   if (!chiave || !mittente) return false;
@@ -23,7 +35,13 @@ export async function manda({ a, oggetto, html }: { a: string; oggetto: string; 
     const r = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${chiave}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: `${NOME_SITO} <${mittente.replace(/^.*<|>.*$/g, "")}>`, to: [a], subject: oggetto, html }),
+      body: JSON.stringify({
+        from: `${NOME_SITO} <${mittente.replace(/^.*<|>.*$/g, "")}>`,
+        to: [a],
+        subject: oggetto,
+        html,
+        ...(rispondiA ? { reply_to: rispondiA } : {}),
+      }),
     });
     if (!r.ok) console.error("posta:", r.status, (await r.text()).slice(0, 200));
     return r.ok;
@@ -72,6 +90,64 @@ export function letteraBenvenuto({ email, password, nome }: { email: string; pas
           : `<p>Hai già un account ${NOME_CHELIVELLO} con questa email: la password è la stessa. Se non la ricordi, da <a href="${SITO}/entra" style="color:#16233a">entra</a> puoi chiederne una nuova.</p>`) +
         tasto(`${SITO}/entra`, "Entra nel tuo Movijoy") +
         `<p>Dentro ti faccio cinque domande su come scrivi, e poi è tuo.</p>`,
+    ),
+  };
+}
+
+/* ── Il dialogo della pagina principale ──────────────────────────── */
+
+/** A chi ha risposto «per me»: Movijoy si attiva da solo, ecco il tasto.
+    Nessuno gli scrive a mano (Lorenzo, 16 ottobre 2026): la lettera è
+    il seguito, e la cassa è la porta. */
+export function letteraAttiva({ nome }: { nome?: string | null }) {
+  const chi = nome ? sfuggi(nome.split(" ")[0]) : null;
+  return {
+    oggetto: "Il tuo Movijoy: si attiva da solo, ecco come",
+    html: guscio(
+      `<p>${chi ? `Ciao ${chi}, grazie` : "Grazie"} per le risposte. Movijoy per te non aspetta nessuno: si attiva dal sito, con la carta, e in pochi minuti è tuo.</p>` +
+        `<table style="margin:18px 0;border-collapse:collapse;font-size:15px"><tr><td style="padding:6px 14px 6px 0;color:#6b7280">Configurazione, una volta</td><td style="padding:6px 0"><b>${CONFIGURAZIONE_TESTO}</b> ${PIU_IVA}</td></tr><tr><td style="padding:6px 14px 6px 0;color:#6b7280">Manutenzione, ogni mese</td><td style="padding:6px 0"><b>${MENSILE_TESTO}</b> ${PIU_IVA}, senza vincolo</td></tr></table>` +
+        `<p>Il totale con l'IVA lo vedi alla cassa, prima di pagare. Dentro ti faccio cinque domande su come scrivi, e la chiamata di configurazione di quaranta minuti con una persona di ${NOME_CHELIVELLO} è compresa.</p>` +
+        tasto(`${SITO}/privato`, "Attiva il tuo Movijoy") +
+        `<p style="font-size:13px;color:#6b7280">Se hai una domanda prima di attivarlo, rispondi a questa email: arriva a una persona.</p>`,
+    ),
+  };
+}
+
+/** A chi ha risposto «per la mia piattaforma»: qui non si compra dal sito, qualcuno lo contatta. */
+export function letteraRicevuta({ nome }: { nome?: string | null }) {
+  const chi = nome ? sfuggi(nome.split(" ")[0]) : null;
+  return {
+    oggetto: "Le tue risposte sono arrivate",
+    html: guscio(
+      `<p>${chi ? `Ciao ${chi}, grazie` : "Grazie"} per le risposte. Movijoy per una piattaforma si fa su accordo: una persona di ${NOME_CHELIVELLO} le legge e ti contatta, di solito in giornata.</p>` +
+        `<p>Intanto, se vuoi vederlo di nuovo al lavoro: <a href="${SITO}/all-opera" style="color:#16233a">${SITO.replace(/^https?:\/\//, "")}/all-opera</a>.</p>`,
+    ),
+  };
+}
+
+/** L'avviso a chi risponde, per ogni richiesta. */
+export function avvisoRichiesta({
+  nome,
+  email,
+  chi,
+  messaggio,
+  origine,
+}: {
+  nome: string;
+  email: string;
+  chi: string | null;
+  messaggio: string;
+  origine: string | null;
+}) {
+  return {
+    oggetto: `Richiesta Movijoy — ${nome || email}${chi ? ` (${chi})` : ""}`,
+    html: guscio(
+      `<p><b>${sfuggi(nome || "(senza nome)")}</b> &lt;${sfuggi(email)}&gt;${chi ? ` · ${sfuggi(chi)}` : ""}</p>` +
+        `<p>${sfuggi(messaggio || "(nessun messaggio)").replace(/\n/g, "<br>")}</p>` +
+        (chi === "privato"
+          ? `<p>Ha ricevuto la lettera con il tasto per attivare Movijoy da solo: non serve scrivergli.</p>`
+          : `<p>Ha ricevuto una conferma: aspetta che una persona lo contatti.</p>`) +
+        `<p style="color:#6b7280">origine: ${sfuggi(origine ?? "—")}</p>`,
     ),
   };
 }

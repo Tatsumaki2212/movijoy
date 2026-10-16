@@ -23,10 +23,9 @@ export function stripeConfigurato(): boolean {
 
 /* I prezzi su Stripe sono netti; l'IVA al 22% si aggiunge con l'aliquota
    STRIPE_TAX_RATE_IVA nella sessione. In pagina si mostra il netto con
-   «+ IVA 22%» accanto; il totale lo si vede alla cassa. */
-export const CONFIGURAZIONE_TESTO = "199,99 €";
-export const MENSILE_TESTO = "49,99 €";
-export const PIU_IVA = "+ IVA 22%";
+   «+ IVA 22%» accanto; il totale lo si vede alla cassa. I testi stanno in
+   prezzi-testo.ts, che non importa Stripe e può girare nel browser. */
+export { CONFIGURAZIONE_TESTO, MENSILE_TESTO, PIU_IVA } from "./prezzi-testo";
 export const ALIQUOTA_IVA = process.env.STRIPE_TAX_RATE_IVA ?? null;
 export function aliquote(): string[] | undefined {
   return ALIQUOTA_IVA ? [ALIQUOTA_IVA] : undefined;

@@ -13,7 +13,7 @@ import { frase as fraseGrazie } from "../lib/dialogo-frasi";
 const MS = 38;
 
 export default function Grazie() {
-  const [chi, setChi] = useState<{ nome?: string; email?: string }>({});
+  const [chi, setChi] = useState<{ nome?: string; email?: string; chi?: string }>({});
   const [scritto, setScritto] = useState<number | null>(null);
   const [parla, setParla] = useState(false);
 
@@ -22,13 +22,14 @@ export default function Grazie() {
     const t = window.setTimeout(() => {
       try {
         const v = sessionStorage.getItem("movijoy:grazie");
-        if (v) setChi(JSON.parse(v) as { nome?: string; email?: string });
+        if (v) setChi(JSON.parse(v) as { nome?: string; email?: string; chi?: string });
       } catch {}
     }, 0);
     return () => window.clearTimeout(t);
   }, []);
 
-  const frase = fraseGrazie("grazie", { nome: chi.nome, email: chi.email });
+  const frase = fraseGrazie("grazie", { nome: chi.nome, email: chi.email, chi: chi.chi });
+  const perSe = chi.chi !== "piattaforma";
 
   const [voce, cambiaVoce] = useVoce();
 
@@ -47,7 +48,7 @@ export default function Grazie() {
     };
     const avvio = window.setTimeout(() => {
       if (voce) {
-        ferma = di({ id: "grazie", nome: chi.nome, email: chi.email }, frase, {
+        ferma = di({ id: "grazie", nome: chi.nome, email: chi.email, chi: chi.chi }, frase, {
           allaFine: () => {
             voceFinita = true;
             chiudi();
@@ -95,6 +96,16 @@ export default function Grazie() {
           {frase.slice(0, mostrato)}
           {mostrato < frase.length && <span className="mj-opera__cursore" aria-hidden="true" />}
         </p>
+        {/* «Per me» si attiva da solo: la porta è qui, non in una mail
+            scritta a mano. Per una piattaforma invece si aspetta una
+            persona. Niente email nell'indirizzo: la cassa la richiede. */}
+        {perSe && (
+          <p className="mj-io__azioni">
+            <a className="mj-tasto" href="/privato">
+              Attiva il tuo Movijoy
+            </a>
+          </p>
+        )}
         <p className="mj-modulo__nota">
           Intanto, se vuoi vedere di nuovo come lavora: <a href="/all-opera">Movijoy all&apos;opera</a>.
         </p>
